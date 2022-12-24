@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+p {
+  margin: 0;
+}
+
+span {
+  font-weight: bolder;
+}
+
+form {
+  width: 90%;
+  margin: 10px auto;
+  /* padding: 10px; */
+  /* background: #aaa; */
+  display: grid;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+input[type="text"] {
+  font-size: 20px;
+  padding: 10px;
+  margin: 0;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+}
+
+.Container {
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  display: grid;
+  grid-gap: 10px;
+  border-radius: 10px;
+  /* box-shadow: 0 0 4px rgb(0 0 0 / 30%); */
+  grid-template-columns: repeat(3, 1fr);
+}
+
+article {
+  border-radius: 10px;
+  box-shadow: 0 0 4px rgb(0 0 0 / 30%);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.Cover {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 4px rgb(0 0 0 / 30%);
+}
+
+.Info {
+  width: 100%;
+}
+
+.Info h2 {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 640px) {
+  .Container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .Container {
+    grid-template-columns: 1fr;
+  }
+}

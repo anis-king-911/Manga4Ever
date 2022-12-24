@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>admin</title>
+
+  <link rel="stylesheet" href="./style.css" />
+  <script type="module" src="./main.js"></script>
+  <script defer src="///unpkg.com/alpinejs"></script>
+</head>
+
+<body x-data="{ openTab: 1 }">
+  <header>
+    <nav>
+      <button x-on:click="openTab = 1" :class="{ 'active': openTab === 1 }">Add Manga</button>
+      <button x-on:click="openTab = 2" :class="{ 'active': openTab === 2 }">Add Volume</button>
+      <button x-on:click="openTab = 3" :class="{ 'active': openTab === 3 }">Manga List</button>
+      <button x-on:click="openTab = 4" :class="{ 'active': openTab === 4 }">Volume List</button>
+    </nav>
+  </header>
+  
+  <main>
+    <span x-show="openTab === 1" x-cloak>
+      <form class="MangaForm" autocapitalize="off">
+        <div class="FormGroup">
+          <label for="Title">Title</label>
+          <select name="Title" id="Title"></select>
+        </div>
+        <div class="FormGroup">
+          <label for="Cover">Cover</label>
+          <input type="url" name="Cover" id="Cover" placeholder="Cover..." />
+        </div>
+        <div class="FormGroup">
+          <label for="Count">Volume Count</label>
+          <input type="text" name="Count" id="Count" placeholder="Volume Count..." />
+        </div>
+        <div class="FormGroup">
+          <label for="State">State</label>
+          <select name="State" id="State">
+            <option value="Publishing">Publishing</option>
+            <option value="Finished">Finished</option>
+            <option value="On Hiatus">On Hiatus</option>
+          </select>
+        </div>
+        <div class="FormGroup">
+          <label for="Type">Type</label>
+          <select name="Type" id="Type">
+            <option value="Manga">Manga</option>
+            <option value="One Shot">One Shot</option>
+            <option value="Light Novel">Light Novel</option>
+          </select>
+        </div>
+        <div class="FormGroup">
+          <label for="CreationDate">Creation Date</label>
+          <input type="datetime-local" name="CreationDate" id="CreationDate" placeholder="Creation Date..." />
+        </div>
+        <div class="FormGroup">
+          <button type="submit">upload manga</button>
+        </div>
+      </form>
+    </span>
+    <span x-show="openTab === 2" x-cloak>
+      <form class="VolumeForm">
+        <div class="FormGroup">
+          <label for="Title">Title</label>
+          <select name="Title" id="Title"></select>
+        </div>
+        <div class="FormGroup">
+          <label for="Cover">Cover</label>
+          <input type="url" name="Cover" id="Cover" placeholder="Cover..." />
+        </div>
+        <div class="FormGroup">
+          <label for="VolNumber">Number</label>
+          <input type="number" name="VolNumber" id="VolNumber" placeholder="Number..." />
+        </div>
+        <div class="FormGroup">
+          <button type="submit">upload volume</button>
+        </div>
+      </form>
+    </span>
+    <span x-show="openTab === 3" x-cloak>
+      <table>
+        <thead>
+          <tr>
+            <td>Cover</td>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Actions</td>
+          </tr>
+        </thead>
+        <tbody class="listTbody"></tbody>
+      </table>
+    </span>
+    <span x-show="openTab === 4" x-cloak>
+      <table>
+        <thead>
+          <tr>
+            <td>Cover</td>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Actions</td>
+          </tr>
+        </thead>
+        <tbody class="referenceTbody"></tbody>
+      </table>
+      <div class="Pagination">
+        <button class="OldDataBtn">Old Data</button>
+        <button class="NewDataBtn">New Data</button>
+      </div>
+    </span>
+  </main>
+  
+</body>
+
+</html>
