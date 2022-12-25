@@ -1,5 +1,5 @@
 import { listRow, referenceRow } from './components.js';
-import { Manga, Volume } from './components.js';
+import { Manga, Volume, nManga } from './components.js';
 
 import {
   database, ref, child, onValue, set, get, push, update, remove,
@@ -8,33 +8,13 @@ import {
 } from './firebase.js';
 
 const forms = document.querySelectorAll('form');
+
 const MangaForm = document.querySelector('.MangaForm');
 const VolumeForm = document.querySelector('.VolumeForm');
 
+const MangaUpdateForm = document.querySelector('.MangaUpdateForm');
+
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
-
-MangaForm.addEventListener('submit', (event) => {
-  const newManga = new Manga(MangaForm, {
-    Title: MangaForm.Title.value,
-    Cover: MangaForm.Cover.value,
-    Count: MangaForm.Count.value,
-    State: MangaForm.State.value,
-    Type: MangaForm.Type.value,
-    CreationDate: MangaForm.CreationDate.value
-  });
-
-  MangaUpload(newManga);
-})
-
-VolumeForm.addEventListener('submit', (event) => {
-  const newVolume = new Volume(VolumeForm, {
-    Title: VolumeForm.Title.value,
-    Cover: VolumeForm.Cover.value,
-    VolNumber: VolumeForm.VolNumber.value
-  });
-
-  VolumeUpload(newVolume);
-})
 
 function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
   const databaseRef = ref(database, list);
@@ -57,6 +37,18 @@ function VolumeUpload({ ID, Title, Cover, VolNumber, CreatedAt }) {
   }).then(() => {
     console.log('upload done');
     VolumeForm.reset();
+  }).catch(error => console.log(error))
+}
+
+function MangaUpdate(uid, { Title, Cover, Count, State, Type, CreationDate }) {
+  const databaseRef = ref(database, list);
+  const databaseChild = child(databaseRef, `${uid}`);
+
+  update(databaseChild, {
+    Title, Cover, Count, State, Type, CreationDate
+  }).then(() => {
+    console.log('update done');
+    MangaUpdateForm.reset();
   }).catch(error => console.log(error))
 }
 
@@ -93,19 +85,11 @@ let names = [
   'Ao No Exorcist', 'Attack On Titans', 'Dr: Stone', 'The Promised Neverland', 'Samurai 8 Hachimaruden', 'Kimetsu No Yaiba', 'Mairimashita, Senpai', 'Kuzumi-Kun Cant You Read the Room', 'Burn The Witch', 'I Sold My Life For Ten Thousand Yen Per Year', 'Tokyo Ghoul', 'Tokyo Ghoul:re', 'Black Clover', 'Boku No Hero Academia', 'One Punch Man', 'Jujutsu Kaisen', 'Chainsaw Man', 'The Four Knights of Apocalypse', 'Boruto NNG', 'Fairy Tail 100 Years Quest', 'Dragon Ball Super', 'Nanatsu no Taizai', 'Noragami', 'Edens Zero', 'Record Of Ragnarok', 'Tokyo Revengers', 'Fire Force', "Komi Can't Communicate", 'Made in Abyss', 'Vinland Saga', 'Platinum End', 'Perfect World', 'Tate No Yuusha No Nariagari', 'Death Note Tokubetsu Yomikiri', 'Golden Kamuy', 'Vagabond', 'Spy X Family', 'Kaiju No. 8', 'Horimiya', 'Berserk', 'Kiseijuu', 'Fairy Tail Zero', 'Monster', 'Blue Lock', 'Fire Punch', 'Jujutsu Kaisen 0', 'Pumpkin Night', 'Kimi no Na wa', 'Ao Haru Ride', 'Koe no Katachi', 'Zetman', 'Dr. Stone Reboot: Byakuya', 'Tate No Yuusha No Nariagari', 'Sword Art Online', 'Overlord', 'One Piece', 'Haikyuu!!', 'Tonikaku Kawaii', 'Sakamoto Days']
 
 
-names.forEach((name) => {
-  MangaForm.Title.innerHTML +=
-    `<option value="${name}">${name}</option>`;
-
-  VolumeForm.Title.innerHTML +=
-    `<option value="${name}">${name}</option>`;
-})
-
-forms.forEach((form) => {
-  form.addEventListener('submit', () => {
-    console.log(form.Title.value);
-  })
-})
+//forms.forEach((form) => {
+//  form.addEventListener('submit', () => {
+//    console.log(form.Title.value);
+//  })
+//})
 
 const listTbody = document.querySelector('.listTbody');
 const referenceTbody = document.querySelector('.referenceTbody');
@@ -260,33 +244,99 @@ function GetListV2() {
 }
 */
 
-getOldDataBtn.addEventListener('click', () => getOldData());
-getNewDataBtn.addEventListener('click', () => getNewData());
+const WindowPATH = window.location.pathname;
+const WindowREF = window.location.href.split('/').pop();
 
 window.onload = () => {
-  getData();
-  getList();
-  Keys();
+  console.log(WindowPATH);
+  if(WindowPATH === '/_/' || WindowPATH === '/_/index.html') {
+
+    names.forEach((name) => {
+      MangaForm.Title.innerHTML +=
+        `<option value="${name}">${name}</option>`;
+    
+      VolumeForm.Title.innerHTML +=
+        `<option value="${name}">${name}</option>`;
+    })
+
+    MangaForm.addEventListener('submit', (event) => {
+      const newManga = new Manga(MangaForm, {
+        Title: MangaForm.Title.value,
+        Cover: MangaForm.Cover.value,
+        Count: MangaForm.Count.value,
+        State: MangaForm.State.value,
+        Type: MangaForm.Type.value,
+        CreationDate: MangaForm.CreationDate.value
+      });
+    
+      MangaUpload(newManga);
+    })
+    
+    VolumeForm.addEventListener('submit', (event) => {
+      const newVolume = new Volume(VolumeForm, {
+        Title: VolumeForm.Title.value,
+        Cover: VolumeForm.Cover.value,
+        VolNumber: VolumeForm.VolNumber.value
+      });
+    
+      VolumeUpload(newVolume);
+    })
+
+    getData();
+    getList();
+    Keys();
+
+    getOldDataBtn.addEventListener('click', () => getOldData());
+    getNewDataBtn.addEventListener('click', () => getNewData());
+
+  } else if(WindowPATH === '/_/edit.html') {
+    names.forEach((name) => {
+      MangaUpdateForm.Title.innerHTML +=
+        `<option value="${name}">${name}</option>`;
+    })
+
+    OpenEdit(MangaUpdateForm ,WindowREF);
+
+    MangaUpdateForm.addEventListener('submit', (event) => {
+      const newManga = new nManga({
+        Title: MangaUpdateForm.Title.value,
+        Cover: MangaUpdateForm.Cover.value,
+        Count: MangaUpdateForm.Count.value,
+        State: MangaUpdateForm.State.value,
+        Type: MangaUpdateForm.Type.value,
+        CreationDate: MangaUpdateForm.CreationDate.value
+      });
+
+      MangaUpdate(WindowREF, newManga);
+    })
+  }
 }
 
 
+function OpenEdit(form, id) {
+  const databaseRef = ref(database, list);
+  const databaseChild = child(databaseRef, `${id}/`);
+  
+  onValue(databaseChild, (snapshot)=> {
+    const key = snapshot.key;
+    const data = snapshot.val();
+    
+    setTimeout(()=> {
+    
+      form.Title.value = data.Title;
+      form.Count.value = data.Count;
+      form.State.value = data.State;
+      form.Cover.value = data.Cover;
 
-/*
-setTimeout(() => {
-  let count = 0;
-  let xRun = setInterval(() => {
-    
-    getNewDataBtn.click();
-    
-    count++;
-    
-    count === 100 ? clearInterval(xRun) : '';
-    
-    console.log(count);
-    
-  }, 200);
-  
-  //setTimeout(() => clearInterval(xRun), 20000)
-  
-}, 4000);
-*/
+      const one = new Date(data.CreationDate);
+      const two = one.toISOString();
+
+      console.log(two.split('Z').shift());
+
+      form.CreationDate.value = two.split('Z').shift();
+      
+      console.log(data);
+      
+    }, 2000);
+  })
+}
