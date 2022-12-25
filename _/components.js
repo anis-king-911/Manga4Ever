@@ -12,7 +12,7 @@ function listRow(key, { ID, Title, Cover, Count, State }) {
       <td>${Title}: ${Count}</td>
       <td>
         <button>delete</button>
-        <button><a href="./edit.html#/${key}">edit</a></button>
+        <a href="./edit.html#/${key}" target="_blank"><button>edit</button></a>
       </td>
     </tr>
   `

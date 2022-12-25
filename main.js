@@ -62,9 +62,15 @@ function getManga(Name) {
 const WindowREF = window.location.href.split('/').pop();
 const WindowPATH = window.location.pathname;
 
+const theme = document.querySelector('.theme');
+
 window.onload = () => {
   if(WindowPATH === '/' || WindowPATH === '/index.html') {
     getData();
+
+    theme.addEventListener('click', (event) => {
+      console.log(document.body.classList.toggle('dark'));
+    })
     form.Search.addEventListener('keyup', () => Search());
   } else if(WindowPATH === '/manga.html') {
     getManga(WindowREF);

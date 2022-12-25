@@ -112,7 +112,7 @@ async function Keys() {
   console.log({ firstChild, lastChild });
   
   const xSize = await get(databaseOrder).then(snapshot => snapshot.size);
-  console.log('you have ', xSize/size, ' data page');
+  console.log(`there is ${xSize} volume = ${xSize/size} page => with Math.floor()+1 = ${Math.floor(xSize/size)+1} pages`);
 }
 
 async function disabledBtns() {
@@ -248,14 +248,13 @@ const WindowPATH = window.location.pathname;
 const WindowREF = window.location.href.split('/').pop();
 
 window.onload = () => {
-  console.log(WindowPATH);
   if(WindowPATH === '/_/' || WindowPATH === '/_/index.html') {
 
     names.forEach((name) => {
-      MangaForm.Title.innerHTML +=
+      MangaForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     
-      VolumeForm.Title.innerHTML +=
+      VolumeForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     })
 
@@ -291,7 +290,7 @@ window.onload = () => {
 
   } else if(WindowPATH === '/_/edit.html') {
     names.forEach((name) => {
-      MangaUpdateForm.Title.innerHTML +=
+      MangaUpdateForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     })
 

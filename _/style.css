@@ -9,6 +9,10 @@ body {
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
 img {
   width: 100%;
   max-width: 80px;

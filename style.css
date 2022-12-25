@@ -8,6 +8,10 @@ body {
   padding: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
 img {
   width: 100%;
   height: 100%;
@@ -20,6 +24,16 @@ p {
 
 span {
   font-weight: bolder;
+}
+
+header {
+  width: 100%;
+  margin: 0 auto;
+  min-height: 50px;
+  box-shadow: 0 0 4px rgb(0 0 0 / 30%);
+  padding: 10px;
+  display: flex;
+  align-items: center;
 }
 
 form {
@@ -60,6 +74,7 @@ article {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  transition: 800ms;
 }
 
 .Cover {
@@ -75,11 +90,38 @@ article {
 }
 
 .Info h2 {
+  transition: 800ms;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+}
+
+
+
+body.dark {
+  background: rgb(18, 18, 18);
+}
+body.dark header {
+  background: rgba(255, 255, 255, .13);
+}
+body.dark form {
+  box-shadow: 0 0 10px rgb(255 255 255 / 50%);
+}
+body.dark article {
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.7);
+}
+body.dark article:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+body.dark article a {
+  color: rgb(69,179,224);
+  transition: 800ms;
+}
+body.dark article a:hover {
+  color: rgb(31,141,186);
 }
 
 
