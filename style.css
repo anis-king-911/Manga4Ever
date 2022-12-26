@@ -26,24 +26,69 @@ span {
   font-weight: bolder;
 }
 
-header {
-  width: 100%;
-  margin: 0 auto;
-  min-height: 50px;
-  box-shadow: 0 0 4px rgb(0 0 0 / 30%);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-}
-
 form {
   width: 90%;
   margin: 10px auto;
-  /* padding: 10px; */
-  /* background: #aaa; */
   display: grid;
   border: 1px solid #000;
   border-radius: 10px;
+  overflow: hidden;
+}
+
+.StateFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.StateFilter button {
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .14);
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: bolder;
+  transition: 800ms;
+}
+
+.StateFilter button.active {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .2);
+}
+
+.StateFilter button:hover {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .18);
+}
+
+.SortingFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.SortingFilter button {
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .14);
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: bolder;
+  transition: 800ms;
+}
+
+.SortingFilter button.active {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .2);
+}
+
+.SortingFilter button:hover {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .18);
 }
 
 input[type="text"] {
@@ -62,8 +107,7 @@ input[type="text"] {
   display: grid;
   grid-gap: 10px;
   border-radius: 10px;
-  /* box-shadow: 0 0 4px rgb(0 0 0 / 30%); */
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 article {
@@ -75,6 +119,10 @@ article {
   align-items: center;
   overflow: hidden;
   transition: 800ms;
+}
+
+article.Hidden {
+  display: none;
 }
 
 .Cover {
@@ -98,40 +146,19 @@ article {
   text-align: center;
 }
 
-
-
-body.dark {
-  background: rgb(18, 18, 18);
-}
-body.dark header {
-  background: rgba(255, 255, 255, .13);
-}
-body.dark form {
-  box-shadow: 0 0 10px rgb(255 255 255 / 50%);
-}
-body.dark article {
-  background: rgba(255, 255, 255, 0.13);
-  color: rgba(255, 255, 255, 0.7);
-}
-body.dark article:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-body.dark article a {
-  color: rgb(69,179,224);
-  transition: 800ms;
-}
-body.dark article a:hover {
-  color: rgb(31,141,186);
+@media only screen and (max-width: 1115px) {
+  .Container {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
-
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 960px) {
   .Container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 760px) {
   .Container {
     grid-template-columns: repeat(2, 1fr);
   }

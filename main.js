@@ -18,9 +18,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+const WindowREF = window.location.href.split('/').pop();
+const WindowPATH = window.location.pathname;
+
 const Container = document.querySelector('.Container');
-const form = document.querySelector('form');
+const forms = document.querySelectorAll('form');
 let reference = 'Manga4Up/', list = 'List/';
+
+const SearchFilter = document.querySelector('.SearchFilter');
+const StateFilterBtns = document.querySelectorAll('.StateFilter button');
+const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
+
+forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
 function Search() {
   const inpValue = document.querySelector('[data-value]').value.toUpperCase();
@@ -34,6 +43,73 @@ function Search() {
   })
 }
 
+function Filter(state) {
+  const books = document.querySelectorAll('[data-state]');
+
+  if(state === 'Show All') state = ''
+  books.forEach((book) => {
+    book.classList.add('Hidden');
+    if(book.getAttribute('data-state').indexOf(state) > -1) book.classList.remove('Hidden');
+  })
+}
+
+function SortAsc() {
+  const list = document.querySelector('.Container');
+  let switching = true, switchcount = 0, shouldSwitch, dir = "asc", i, c, b;
+  while (switching) {
+    switching = false;
+    c = list.getElementsByTagName("article");
+    b = list.querySelectorAll('article .Info h2 a');
+    for (i = 0; i < (b.length - 1); i++) {
+      shouldSwitch = false;
+      if (dir === "asc") {
+        if (b[i].innerHTML.toLowerCase() > b[i + 1].innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      c[i].parentNode.insertBefore(c[i + 1], c[i]);
+      switching = true;
+      switchcount++;
+    }
+  }
+}
+
+function SortDesc() {
+  const list = document.querySelector('.Container');
+  let switching = true, switchcount = 0, shouldSwitch, dir = 'desc', i, c, b;
+  while (switching) {
+    switching = false;
+    c = list.getElementsByTagName("article");
+    b = list.querySelectorAll('article .Info h2 a');
+    for (i = 0; i < (b.length - 1); i++) {
+      shouldSwitch = false;
+      if (dir === "desc") {
+        if (b[i].innerHTML.toLowerCase() < b[i + 1].innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      c[i].parentNode.insertBefore(c[i + 1], c[i]);
+      switching = true;
+      switchcount++;
+    }
+  }
+}
+
+function SortDirection(way) {
+  console.log(way);
+  if(way === 'Asc') {
+    SortAsc();
+  } else if(way === 'Desc') {
+    SortDesc();
+  }
+}
+
 function getData() {
   const databaseRef = ref(database, list);
   onValue(databaseRef, async (snapshot) => {
@@ -44,6 +120,8 @@ function getData() {
     })
   })
 }
+
+
 function getManga(Name) {
   const databaseRef = ref(database, reference);
   onValue(databaseRef, async (snapshot) => {
@@ -57,37 +135,33 @@ function getManga(Name) {
   })
 }
 
-
-
-const WindowREF = window.location.href.split('/').pop();
-const WindowPATH = window.location.pathname;
-
-const theme = document.querySelector('.theme');
-
 window.onload = () => {
   if(WindowPATH === '/' || WindowPATH === '/index.html') {
     getData();
 
-    theme.addEventListener('click', (event) => {
-      console.log(document.body.classList.toggle('dark'));
+    SearchFilter.Search.addEventListener('keyup', () => Search());
+
+    StateFilterBtns[0].classList.add('active');
+    StateFilterBtns.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        StateFilterBtns.forEach(btn => btn.classList.remove('active'));
+        btn.classList.add('active');
+
+        const state = event.target.textContent ||event.target.innerText;
+        Filter(state);
+      })
     })
-    form.Search.addEventListener('keyup', () => Search());
+
+    SortingFilterBtns.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        SortingFilterBtns.forEach(btn => btn.classList.remove('active'));
+        btn.classList.add('active');
+
+        const Sort = event.target.textContent || event.target.innerText;
+        SortDirection(Sort.split(' ').pop());
+      })
+    })
   } else if(WindowPATH === '/manga.html') {
     getManga(WindowREF);
   }
 }
-
-
-
-
-/*
-let interval = 300, increment = 1;
-Array().forEach((item) => {
-  let run = setTimeout(() => {
-    console.log(item);
-
-    clearTimeout(run);
-  }, interval * increment);
-  increment = increment + 1;
-})
-*/

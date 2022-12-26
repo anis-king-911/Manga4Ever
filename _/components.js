@@ -11,7 +11,7 @@ function listRow(key, { ID, Title, Cover, Count, State }) {
       <td>${ID}</td>
       <td>${Title}: ${Count}</td>
       <td>
-        <button>delete</button>
+        <button onclick="MangaRemove('${key}')">delete</button>
         <a href="./edit.html#/${key}" target="_blank"><button>edit</button></a>
       </td>
     </tr>

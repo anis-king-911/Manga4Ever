@@ -13,7 +13,7 @@
   <script defer src="///unpkg.com/alpinejs"></script>
 </head>
 
-<body x-data="{ openTab: 1 }">
+<body x-data="{ openTab: 3 }">
   <header>
     <nav>
       <button x-on:click="openTab = 1" :class="{ 'active': openTab === 1 }">Add Manga</button>
@@ -37,7 +37,7 @@
         </div>
         <div class="FormGroup">
           <label for="Count">Volume Count</label>
-          <input type="text" name="Count" id="Count" placeholder="Volume Count..." />
+          <input type="number" name="Count" id="Count" placeholder="Volume Count..." />
         </div>
         <div class="FormGroup">
           <label for="State">State</label>
@@ -111,6 +111,7 @@
       </table>
       <div class="Pagination">
         <button class="OldDataBtn">Old Data</button>
+        <span class="PagesCount"></span>
         <button class="NewDataBtn">New Data</button>
       </div>
     </span>
