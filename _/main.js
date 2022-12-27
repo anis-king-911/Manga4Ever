@@ -36,6 +36,8 @@ async function FormsID() {
   const referenceSnaps = await get(referenceDatabaseRef).then(snapshot => Object.values(snapshot.val()).pop().ID);
   const referenceNewID = await referenceSnaps + 1;
   VolumeForm.setAttribute('id', referenceNewID);
+  
+  console.log({listNewID, referenceNewID});
 }
 
 function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
@@ -44,10 +46,10 @@ function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
 
   set(databasePush, {
     ID, Title, Cover, Count, State, Type, CreationDate
-  }).then(() => {
+  }).then( async () => {
+    await FormsID();
     console.log('upload done');
     MangaForm.reset();
-    FormsID();
   }).catch(error => console.log(error))
 }
 
@@ -57,10 +59,10 @@ function VolumeUpload({ ID, Title, Cover, VolNumber, CreatedAt }) {
 
   set(databaseChild, {
     ID, Title, Cover, 'Number': VolNumber, CreatedAt
-  }).then(() => {
+  }).then( async () => {
+    await FormsID();
     console.log('upload done');
     VolumeForm.reset();
-    FormsID();
   }).catch(error => console.log(error))
 }
 
