@@ -6,19 +6,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDxJdw2Or76OzVUaAaGSIQ036veT7AlZ00",
-  authDomain: "manga4ever-vercel.firebaseapp.com",
   databaseURL: "https://manga4ever-vercel-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "manga4ever-vercel",
-  storageBucket: "manga4ever-vercel.appspot.com",
-  messagingSenderId: "816513080903",
-  appId: "1:816513080903:web:750f10d34d80558ce71b62"
 };
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-const WindowREF = window.location.href.split('/').pop();
+const WindowPARAMS = new URLSearchParams(window.location.href.split('?').pop());
+const WindowREF = window.location.href.split('/').pop().split('?').shift();
 const WindowPATH = window.location.pathname;
 
 const Container = document.querySelector('.Container');
@@ -122,13 +117,13 @@ function getData() {
 }
 
 
-function getManga(Name) {
+function getManga(Name, Type) {
   const databaseRef = ref(database, reference);
   onValue(databaseRef, async (snapshot) => {
     Container.innerHTML = '';
     const { Volume } = await import('./components.js');
     Object.values(snapshot.val()).reverse().map((data) => {
-      if(data.Title === Name.replaceAll('_', ' ')) {
+      if(data.Title === Name.replaceAll('_', ' ') && data.Type === Type.replaceAll('_', ' ')) {
         Container.innerHTML += Volume(data);
       }
     })
@@ -162,6 +157,7 @@ window.onload = () => {
       })
     })
   } else if(WindowPATH === '/manga.html') {
-    getManga(WindowREF);
+    const typeParam = WindowPARAMS.get('type');
+    getManga(WindowREF, typeParam);
   }
 }

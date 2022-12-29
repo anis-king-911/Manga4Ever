@@ -12,20 +12,23 @@ function listRow(key, { ID, Title, Cover, Count, State }) {
       <td>${Title}: ${Count}</td>
       <td>
         <button onclick="MangaRemove('${key}')">delete</button>
-        <a href="./edit.html#/${key}" target="_blank"><button>edit</button></a>
+        <a href="./edit.html#/${key}?ref=list" target="_blank"><button>edit</button></a>
       </td>
     </tr>
   `
 }
-function referenceRow(key, { ID, Title, Cover, Number}) {
+function referenceRow(key, { ID, Title, Number, Cover, Type }) {
   return `
     <tr id="${key}">
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
-      <td>${Title}: ${Number}</td>
       <td>
-        <button>delete</button>
-        <button>edit</button>
+        <p>${Title}: ${Number}</p>
+        <p>Type: ${Type}</p>
+      </td>
+      <td>
+        <button onclick="VolumeRemove('${key}')">delete</button>
+        <a href="./edit.html#/${key}?ref=manga4up" target="_blank"><button>edit</button></a>
       </td>
     </tr>
   `;
@@ -55,12 +58,13 @@ class Manga {
 }
 
 class Volume {
-  constructor(VolumeForm, {Title, Cover, VolNumber}) {
+  constructor(VolumeForm, {Title, VolNumber, Cover, Type}) {
     const newCover = insert(Cover.split('?').at(0).split('/'), 4, 'tr:w-200').join('/');
     
     this.Title = Title;
-    this.Cover = newCover;
     this.VolNumber = Number(VolNumber);
+    this.Cover = newCover;
+    this.Type = Type;
     this.ID = Number(VolumeForm.id);
     this.CreatedAt = new Date().getTime();
   }
@@ -71,9 +75,10 @@ export { Manga, Volume}
 class nManga {
   constructor({Title, Cover, Count, State, Type, CreationDate}) {
     const newCover = insert(Cover.split('?').at(0).split('/'), 4, 'tr:w-200').join('/');
+    const CoverCheck = Cover.match('/tr:w-200')?Cover:newCover;
 
     this.Title = Title;
-    this.Cover = newCover;
+    this.Cover = CoverCheck;
     this.Count = Count;
     this.State = State;
     this.Type = Type;
@@ -81,4 +86,16 @@ class nManga {
   }
 }
 
-export { nManga }
+class nVolume {
+  constructor({Title, VolNumber, Cover, Type}) {
+    const newCover = insert(Cover.split('?').at(0).split('/'), 4, 'tr:w-200').join('/');
+    const CoverCheck = Cover.match('/tr:w-200')?Cover:newCover;
+
+    this.Title = Title;
+    this.Cover = CoverCheck;
+    this.VolNumber = Number(VolNumber);
+    this.Type = Type;
+  }
+}
+
+export { nManga, nVolume }

@@ -13,7 +13,7 @@
   <script defer src="///unpkg.com/alpinejs"></script>
 </head>
 
-<body x-data="{ openTab: 3 }">
+<body x-data="{ openTab: 2 }">
   <header>
     <nav>
       <button x-on:click="openTab = 1" :class="{ 'active': openTab === 1 }">Add Manga</button>
@@ -72,12 +72,20 @@
           <datalist id="Titles"></datalist>
         </div>
         <div class="FormGroup">
+          <label for="VolNumber">Number</label>
+          <input type="number" name="VolNumber" id="VolNumber" placeholder="Number..." />
+        </div>
+        <div class="FormGroup">
           <label for="Cover">Cover</label>
           <input type="url" name="Cover" id="Cover" placeholder="Cover..." />
         </div>
         <div class="FormGroup">
-          <label for="VolNumber">Number</label>
-          <input type="number" name="VolNumber" id="VolNumber" placeholder="Number..." />
+          <label for="Type">Type</label>
+          <select name="Type" id="Type">
+            <option value="Manga">Manga</option>
+            <option value="One Shot">One Shot</option>
+            <option value="Light Novel">Light Novel</option>
+          </select>
         </div>
         <div class="FormGroup">
           <button type="submit">upload volume</button>
@@ -116,6 +124,8 @@
       </div>
     </span>
   </main>
+  
+  <section></section>
   
 </body>
 

@@ -7,12 +7,14 @@ import {
 } from './firebase.js';
 
 const WindowPATH = window.location.pathname;
-const WindowREF = window.location.href.split('/').pop();
+const WindowREF = window.location.href.split('/').pop().split('?').shift();
+const WindowPARAMS = new URLSearchParams(window.location.href.split('?').pop());
 
 const forms = document.querySelectorAll('form');
 const MangaForm = document.querySelector('.MangaForm');
 const VolumeForm = document.querySelector('.VolumeForm');
 const MangaUpdateForm = document.querySelector('.MangaUpdateForm');
+const VolumeUpdateForm = document.querySelector('.VolumeUpdateForm');
 
 const listTbody = document.querySelector('.listTbody');
 const referenceTbody = document.querySelector('.referenceTbody');
@@ -37,7 +39,7 @@ async function FormsID() {
   const referenceNewID = await referenceSnaps + 1;
   VolumeForm.setAttribute('id', referenceNewID);
   
-  console.log({listNewID, referenceNewID});
+  //console.log({listNewID, referenceNewID});
 }
 
 function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
@@ -53,12 +55,12 @@ function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
   }).catch(error => console.log(error))
 }
 
-function VolumeUpload({ ID, Title, Cover, VolNumber, CreatedAt }) {
+function VolumeUpload({ ID, Title, VolNumber, Cover, Type, CreatedAt }) {
   const databaseRef = ref(database, reference);
   const databaseChild = child(databaseRef, `${CreatedAt}/`);
 
   set(databaseChild, {
-    ID, Title, Cover, 'Number': VolNumber, CreatedAt
+    ID, Title, 'Number': VolNumber, Cover, Type, CreatedAt
   }).then( async () => {
     await FormsID();
     console.log('upload done');
@@ -72,6 +74,18 @@ function MangaUpdate(uid, { Title, Cover, Count, State, Type, CreationDate }) {
 
   update(databaseChild, {
     Title, Cover, Count, State, Type, CreationDate
+  }).then(() => {
+    console.log('update done');
+    MangaUpdateForm.reset();
+  }).catch(error => console.log(error))
+}
+
+function VolumeUpdate(uid, { Title, Cover, VolNumber, Type }) {
+  const databaseRef = ref(database, reference);
+  const databaseChild = child(databaseRef, `${uid}`);
+
+  update(databaseChild, {
+    Title, Cover, 'Number': VolNumber, Type
   }).then(() => {
     console.log('update done');
     MangaUpdateForm.reset();
@@ -97,7 +111,26 @@ function MangaRemove(key) {
   }
 }
 
-async function OpenEdit(form, id) {
+function VolumeRemove(key) {
+  const que = confirm('Delete This Volume');
+
+  switch (que) {
+    case true:
+      const databaseRef = ref(database, reference);
+      const databaseChild = child(databaseRef, key);
+
+      remove(databaseChild).then(() => {
+        console.log(`Manga Removed done`);
+        FormsID();
+      }).catch(error => console.log(error));
+      break;
+    case false:
+      alert('Operation Canceld !');
+      break;
+  }
+}
+
+async function OpenMangaEdit(form, id) {
   const databaseRef = await ref(database, list);
   const databaseChild = await child(databaseRef, `${id}/`);
   
@@ -105,14 +138,26 @@ async function OpenEdit(form, id) {
     const key = snapshot.key;
     const data = snapshot.val();
     
-    setTimeout(()=> {
+    form.Title.value = data.Title;
+    form.Count.value = data.Count;
+    form.State.value = data.State;
+    form.Cover.value = data.Cover;
+    form.CreationDate.value = new Date(data.CreationDate).toISOString().split('Z').shift();
+  })
+}
+
+async function OpenVolumeEdit(form, id) {
+  const databaseRef = await ref(database, reference);
+  const databaseChild = await child(databaseRef, `${id}/`);
+  
+  await onValue(databaseChild, (snapshot)=> {
+    const key = snapshot.key;
+    const data = snapshot.val();
     
-      form.Title.value = data.Title;
-      form.Count.value = data.Count;
-      form.State.value = data.State;
-      form.Cover.value = data.Cover;
-      form.CreationDate.value = new Date(data.CreationDate).toISOString().split('Z').shift();
-    }, 2000);
+    form.Title.value = data.Title;
+    form.VolNumber.value = data.Number;
+    form.Cover.value = data.Cover;
+    form.Type.value = data.Type;
   })
 }
 
@@ -124,7 +169,7 @@ async function Keys() {
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
   
-  console.log({ firstChild, lastChild });
+  //console.log({ firstChild, lastChild });
 }
 
 async function disabledBtns() {
@@ -215,6 +260,7 @@ async function getOldData() {
 
 window.onload = async () => {
   const { names } = await import('./MangaTitles.js');
+  const editType = WindowPARAMS.get('ref');
   
   if(WindowPATH === '/_/' || WindowPATH === '/_/index.html') {
     [...new Set(names)].sort().forEach((name) => {
@@ -245,8 +291,9 @@ window.onload = async () => {
 
       const newVolume = new Volume(VolumeForm, {
         Title: VolumeForm.Title.value,
+        VolNumber: VolumeForm.VolNumber.value,
         Cover: VolumeForm.Cover.value,
-        VolNumber: VolumeForm.VolNumber.value
+        Type: VolumeForm.Type.value
       });
     
       VolumeUpload(newVolume);
@@ -259,13 +306,15 @@ window.onload = async () => {
     getOldDataBtn.addEventListener('click', () => getOldData());
     getNewDataBtn.addEventListener('click', () => getNewData());
 
-  } else if(WindowPATH === '/_/edit.html') {
+  } else if(WindowPATH === '/_/edit.html' && editType === 'list') {
+    VolumeUpdateForm.style.display = 'none';
+
     names.forEach((name) => {
       MangaUpdateForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     })
 
-    OpenEdit(MangaUpdateForm ,WindowREF);
+    OpenMangaEdit(MangaUpdateForm, WindowREF);
 
     MangaUpdateForm.addEventListener('submit', async (event) => {
       const { nManga } = await import('./components.js');
@@ -281,7 +330,30 @@ window.onload = async () => {
 
       MangaUpdate(WindowREF, newManga);
     })
+  } else if(WindowPATH === '/_/edit.html' && editType === 'manga4up') {
+    MangaUpdateForm.style.display = 'none';
+
+    names.forEach((name) => {
+      VolumeUpdateForm.querySelector('#Titles').innerHTML +=
+        `<option value="${name}">${name}</option>`;
+    })
+
+    OpenVolumeEdit(VolumeUpdateForm, WindowREF);
+
+    VolumeUpdateForm.addEventListener('submit', async (event) => {
+      const { nVolume } = await import('./components.js');
+
+      const newVolume = new nVolume({
+        Title: VolumeUpdateForm.Title.value,
+        Cover: VolumeUpdateForm.Cover.value,
+        Type: VolumeUpdateForm.Type.value,
+        VolNumber: VolumeUpdateForm.VolNumber.value,
+      });
+
+      VolumeUpdate(WindowREF, newVolume);
+    })
   }
 }
 
 window.MangaRemove = MangaRemove;
+window.VolumeRemove = VolumeRemove;

@@ -87,6 +87,16 @@ td {
   text-align: center;
 }
 
+td:nth-child(3) {
+  padding: 10px;
+  text-align: left;
+}
+
+td:nth-child(3) p {
+  padding: 0;
+  margin: 0;
+}
+
 .Pagination {
   width: 90%;
   display: flex;

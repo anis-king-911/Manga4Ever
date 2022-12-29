@@ -86,7 +86,10 @@ const names = [
   "One Piece",
   "Haikyuu!!",
   "Tonikaku Kawaii",
-  "Sakamoto Days"
+  "Sakamoto Days",
+  "Ijiranaide, Nagatoro-san",
+  "Yamada-kun to 7-nin no Majo",
+  "Dead Tube",
 ];
 
 export { names }

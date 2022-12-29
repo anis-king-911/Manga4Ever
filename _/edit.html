@@ -10,10 +10,10 @@
 
   <link rel="stylesheet" href="./style.css" />
   <script type="module" src="./main.js"></script>
-  <script defer src="///unpkg.com/alpinejs"></script>
 </head>
 
-<body x-data="{ openTab: 1 }">
+<body>
+
   <form class="MangaUpdateForm" autocapitalize="off">
     <div class="FormGroup">
       <label for="Title">Title</label>
@@ -50,6 +50,33 @@
     </div>
     <div class="FormGroup">
       <button type="submit">update manga</button>
+    </div>
+  </form>
+
+  <form class="VolumeUpdateForm">
+    <div class="FormGroup">
+      <label for="Title">Title</label>
+      <input type="text" list="Titles" name="Title" id="Title" placeholder="Title" />
+      <datalist id="Titles"></datalist>
+    </div>
+    <div class="FormGroup">
+      <label for="VolNumber">Number</label>
+      <input type="number" name="VolNumber" id="VolNumber" placeholder="Number..." />
+    </div>
+    <div class="FormGroup">
+      <label for="Cover">Cover</label>
+      <input type="url" name="Cover" id="Cover" placeholder="Cover..." />
+    </div>
+    <div class="FormGroup">
+      <label for="Type">Type</label>
+      <select name="Type" id="Type">
+        <option value="Manga">Manga</option>
+        <option value="One Shot">One Shot</option>
+        <option value="Light Novel">Light Novel</option>
+      </select>
+    </div>
+    <div class="FormGroup">
+      <button type="submit">upload volume</button>
     </div>
   </form>
 </body>
