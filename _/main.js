@@ -65,6 +65,7 @@ function VolumeUpload({ ID, Title, VolNumber, Cover, Type, CreatedAt }) {
     await FormsID();
     console.log('upload done');
     VolumeForm.reset();
+    await Keys();
   }).catch(error => console.log(error))
 }
 
@@ -75,7 +76,7 @@ function MangaUpdate(uid, { Title, Cover, Count, State, Type, CreationDate }) {
   update(databaseChild, {
     Title, Cover, Count, State, Type, CreationDate
   }).then(() => {
-    console.log('update done');
+    console.log('Manga update done');
     MangaUpdateForm.reset();
   }).catch(error => console.log(error))
 }
@@ -87,8 +88,9 @@ function VolumeUpdate(uid, { Title, Cover, VolNumber, Type }) {
   update(databaseChild, {
     Title, Cover, 'Number': VolNumber, Type
   }).then(() => {
-    console.log('update done');
+    console.log('Volume update done');
     MangaUpdateForm.reset();
+    Keys();
   }).catch(error => console.log(error))
 }
 
@@ -100,9 +102,9 @@ function MangaRemove(key) {
       const databaseRef = ref(database, list);
       const databaseChild = child(databaseRef, key);
 
-      remove(databaseChild).then(() => {
+      remove(databaseChild).then( async () => {
         console.log(`Manga Removed done`);
-        FormsID();
+        await FormsID();
       }).catch(error => console.log(error));
       break;
     case false:
@@ -119,9 +121,10 @@ function VolumeRemove(key) {
       const databaseRef = ref(database, reference);
       const databaseChild = child(databaseRef, key);
 
-      remove(databaseChild).then(() => {
-        console.log(`Manga Removed done`);
-        FormsID();
+      remove(databaseChild).then( async () => {
+        console.log(`Volume Removed done`);
+        await FormsID();
+        await Keys();        
       }).catch(error => console.log(error));
       break;
     case false:
@@ -162,14 +165,15 @@ async function OpenVolumeEdit(form, id) {
 }
 
 async function Keys() {
+  pageIndex = 1;
   const databaseOrder = await query(ref(database, reference), orderByChild(referenceOrder));
   const snap = await get(databaseOrder).then(snapshot => snapshot.val());
   const data = Object.values(snap);
 
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
-  
-  //console.log({ firstChild, lastChild });
+
+  await disabledBtns();
 }
 
 async function disabledBtns() {

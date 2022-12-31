@@ -22,3 +22,27 @@ Array().forEach((item) => {
   increment = increment + 1;
 })
 */
+
+/*
+let time = 1000, timeCount = 0;
+let testRun = setInterval(() => {
+  timeCount++;
+  document.querySelector('.OldDataBtn').click();
+  console.log(timeCount);
+  timeCount === 20 ? clearInterval(testRun) : '';
+}, time);
+
+function namesChrck() {
+  const databaseRef = ref(database, reference);
+
+  onValue(databaseRef, snapshot => {
+    const Snaps = Object.values(snapshot.val());
+    const Names = Snaps.map(Snap => Snap.Title);
+    const Wanted = Names.filter(name => name === '');
+
+    console.log(Wanted);
+  })
+}
+
+namesChrck();
+*/

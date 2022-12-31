@@ -111,6 +111,10 @@ td:nth-child(3) p {
   font-weight: bolder;
 }
 
+.Pagination button[disabled] {
+  cursor: not-allowed;
+}
+
 .Pagination span {
   width: 100%;
   text-align: center;

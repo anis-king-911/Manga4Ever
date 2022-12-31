@@ -22,7 +22,6 @@ const names = [
   "Fairy Tail",
   "Shokugeki no Souma",
   "Mob Psycho 100",
-  "Tate no Yuusha no Nariagari",
   "Overlord",
   "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
   "Dungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka",
