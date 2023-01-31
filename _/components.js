@@ -4,12 +4,15 @@ const StateBg = {
   'On Hiatus': 'rgba(255, 87, 87, .5)',
 };
 
-function listRow(key, { ID, Title, Cover, Count, State }) {
+function listRow(key, { ID, Title, Cover, Count, State, CreationDate }) {
   return `
-    <tr id="${key}" style="background-color: ${StateBg[State]};">
+    <tr data-state="${State}" id="${key}" style="background-color: ${StateBg[State]};">
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
-      <td>${Title}: ${Count}</td>
+      <td>
+        <p>${Title}: ${Count}</p>
+        <p>${new Date(CreationDate).toLocaleDateString('en-US', {dateStyle: 'long'})}</p>
+      </td>
       <td>
         <button onclick="MangaRemove('${key}')">delete</button>
         <a href="./edit.html#/${key}?ref=list" target="_blank"><button>edit</button></a>

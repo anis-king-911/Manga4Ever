@@ -9,7 +9,7 @@ function Manga({ ID, Title, Cover, Count, State, Type, CreationDate }) {
     <p>Type: <span>${Type}</span></p>
     <p>State: <span>${State}</span></p>
     <p>Volume Count: <span>${Count}</span></p>
-    <p>Created At: <span>${CreationDate}</span></p>
+    <p>Created At: <span>${new Date(CreationDate).toLocaleDateString('en-US', {dateStyle: 'long'})}</span></p>
   </div>
 </article>
   `;

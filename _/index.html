@@ -13,13 +13,13 @@
   <script defer src="///unpkg.com/alpinejs"></script>
 </head>
 
-<body x-data="{ openTab: 4 }">
+<body x-data="{ openTab: 3 }">
   <header>
     <nav>
-      <button x-on:click="openTab = 1" :class="{ 'active': openTab === 1 }">Add Manga</button>
-      <button x-on:click="openTab = 2" :class="{ 'active': openTab === 2 }">Add Volume</button>
-      <button x-on:click="openTab = 3" :class="{ 'active': openTab === 3 }">Manga List</button>
-      <button x-on:click="openTab = 4" :class="{ 'active': openTab === 4 }">Volume List</button>
+      <button x-on:click="openTab = 1" :class="{ 'active': openTab === 1 }">insert M</button>
+      <button x-on:click="openTab = 2" :class="{ 'active': openTab === 2 }">insert V</button>
+      <button x-on:click="openTab = 3" :class="{ 'active': openTab === 3 }">M List</button>
+      <button x-on:click="openTab = 4" :class="{ 'active': openTab === 4 }">V List</button>
     </nav>
   </header>
   
@@ -93,6 +93,19 @@
       </form>
     </span>
     <span x-show="openTab === 3" x-cloak>
+      
+      <form class="SearchFilter">
+        <input type="text" name="Search" placeholder="Search..." data-value />
+        <button type="submit">&#128269;</button>
+      </form>
+      
+      <form class="StateFilter">
+        <button type="submit">Show All</button>
+        <button type="submit">Publishing</button>
+        <button type="submit">Finished</button>
+        <button type="submit">On Hiatus</button>
+      </form>
+      
       <table>
         <thead>
           <tr>

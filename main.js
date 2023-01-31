@@ -18,11 +18,12 @@ const WindowPATH = window.location.pathname;
 
 const Container = document.querySelector('.Container');
 const forms = document.querySelectorAll('form');
-let reference = 'Manga4Up/', list = 'List/';
 
 const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilterBtns = document.querySelectorAll('.StateFilter button');
 const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
+
+let reference = 'Manga4Up/', list = 'List/';
 
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
@@ -156,7 +157,7 @@ window.onload = () => {
         SortDirection(Sort.split(' ').pop());
       })
     })
-  } else if(WindowPATH === '/manga.html') {
+  } else if(WindowPATH === '/manga.html' && WindowREF !== '') {
     const typeParam = WindowPARAMS.get('type');
     getManga(WindowREF, typeParam);
   }

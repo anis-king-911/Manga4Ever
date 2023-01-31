@@ -19,12 +19,16 @@ const VolumeUpdateForm = document.querySelector('.VolumeUpdateForm');
 const listTbody = document.querySelector('.listTbody');
 const referenceTbody = document.querySelector('.referenceTbody');
 
-let referenceOrder = 'ID', size = 4, pageIndex = 1;
+let referenceOrder = 'ID', size = 10, pageIndex = 1;
 let firstKey = null, lastKey = null, firstChild = null, lastChild = null;
 
 const getOldDataBtn = document.querySelector('.NewDataBtn');
 const getNewDataBtn = document.querySelector('.OldDataBtn');
 const PagesCount = document.querySelector('.PagesCount');
+
+const SearchFilter = document.querySelector('.SearchFilter');
+const StateFilter = document.querySelector('.StateFilter');
+const StateFilterBtns = StateFilter.querySelectorAll('button');
 
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
@@ -262,6 +266,30 @@ async function getOldData() {
   })
 }
 
+
+function Search() {
+  const inpValue = document.querySelector('[data-value]').value.toUpperCase();
+  const tableRows = document.querySelectorAll('[data-state]');
+
+  tableRows.forEach((Row) => {
+    const Content = Row.querySelector('td:nth-child(3)');
+    const Title = Content.textContent.toUpperCase() || Content.innerText.toUpperCase();
+    
+    Title.indexOf(inpValue) > -1 ? Row.style.display = '' : Row.style.display = 'none';
+  })
+}
+
+function FilterSelection(label) {
+  const books = document.querySelectorAll('[data-state]');
+  
+  if(label === 'Show All') label = ''
+  books.forEach((book) => {
+    book.style.display = 'none';
+    const state = book.getAttribute('data-state').indexOf(label)>-1;
+    if(state) book.style.display = 'table-row';
+  })
+}
+
 window.onload = async () => {
   const { names } = await import('./MangaTitles.js');
   const editType = WindowPARAMS.get('ref');
@@ -309,7 +337,23 @@ window.onload = async () => {
 
     getOldDataBtn.addEventListener('click', () => getOldData());
     getNewDataBtn.addEventListener('click', () => getNewData());
-
+    
+    SearchFilter.addEventListener('submit', event => event.preventDefault());
+    SearchFilter.Search.addEventListener('keyup', () => Search());
+    
+    StateFilter.addEventListener('submit', event => event.preventDefault());
+    
+    StateFilterBtns[0].classList.add('active');
+    StateFilterBtns.forEach((Btn) => {
+      Btn.addEventListener('click', (event) => {
+        StateFilterBtns.forEach(Btn => Btn.classList.remove('active'));
+        Btn.classList.add('active');
+        const state = event.target.textContent;
+        
+        FilterSelection(state);
+      });
+    })
+    
   } else if(WindowPATH === '/_/edit.html' && editType === 'list') {
     VolumeUpdateForm.style.display = 'none';
 

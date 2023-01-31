@@ -89,7 +89,6 @@ const names = [
   "Ijiranaide, Nagatoro-san",
   "Yamada-kun to 7-nin no Majo",
   "Dead Tube",
-  "Go-Toubun no Hanayome",
 ];
 
 export { names }

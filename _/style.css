@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
   font-family: sans-serif;
+  outline: none;
   font-size: 20px;
 }
 
@@ -28,20 +29,30 @@ img {
 
 header {
   padding: 4px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 }
 
 nav {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 4px;
+}
+
+nav button {
+  border: 1px solid #000;
+  border-radius: 6px;
+  transition: 600ms;
+}
+
+nav button.active {
+  background: rgba(87, 233, 145, 1);
 }
 
 form {
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   padding: 10px;
   margin: 10px auto;
   display: grid;
@@ -75,11 +86,14 @@ button {
 
 table {
   width: 90%;
-  max-width: 100%;
-  min-height: 390px;
+  max-width: 600px;
   margin: 0 auto;
   border-collapse: collapse;
 }
+
+/* table:last-child {
+  min-height: 390px;
+} */
 
 td {
   border: 1px solid #000;
@@ -92,9 +106,44 @@ td:nth-child(3) {
   text-align: left;
 }
 
-td:nth-child(3) p {
+td /* :nth-child(3) */ p {
   padding: 0;
   margin: 0;
+}
+
+.SearchFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.SearchFilter input {
+  background: none;
+  border: none;
+  width: 100%;
+}
+
+.SearchFilter button {
+  background: none;
+  border: none;
+  width: 10%;
+}
+
+.StateFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+}
+
+.StateFilter button {
+  border: 1px solid #000;
+  border-radius: 6px;
+  transition: 600ms;
+}
+
+.StateFilter button.active {
+  background: rgba(87, 233, 145, 1);
 }
 
 .Pagination {
