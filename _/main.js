@@ -179,7 +179,7 @@ async function Keys() {
 
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
-  
+  /******************************
   const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
   
   for (var i = 0; i < Math.ceil(DataSize / size); i++) {
@@ -188,8 +188,9 @@ async function Keys() {
   }
   
   pageIndex = Math.ceil(DataSize/size);
+  ******************************/
   await disabledBtns();
-  await numbersPagination();
+  //await numbersPagination();
 }
 
 async function disabledBtns() {
@@ -257,9 +258,9 @@ async function getNewData() {
     disabledBtns();
   })
   
-  const buttons = document.querySelectorAll('.PagesNumber button');
-  buttons.forEach(btn => btn.classList.remove('active'));
-  buttons[pageIndex - 1].classList.add('active');
+  //const buttons = document.querySelectorAll('.PagesNumber button');
+  //buttons.forEach(btn => btn.classList.remove('active'));
+  //buttons[pageIndex - 1].classList.add('active');
 }
 
 async function getOldData() {
@@ -280,11 +281,12 @@ async function getOldData() {
     disabledBtns();
   })
   
-  const buttons = document.querySelectorAll('.PagesNumber button');
-  buttons.forEach(btn => btn.classList.remove('active'));
-  buttons[pageIndex - 1].classList.add('active');
+  //const buttons = document.querySelectorAll('.PagesNumber button');
+  //buttons.forEach(btn => btn.classList.remove('active'));
+  //buttons[pageIndex - 1].classList.add('active');
 }
 
+/******************************
 async function GetWantedData(fromWantedKey, toWantedKey, pageNumber) {
   pageIndex = pageNumber;
   const databaseRef = await ref(database, reference);
@@ -305,7 +307,6 @@ async function GetWantedData(fromWantedKey, toWantedKey, pageNumber) {
   })
 }
 
-
 async function numbersPagination() {
   const buttons = document.querySelectorAll('.PagesNumber button');
   
@@ -323,7 +324,7 @@ async function numbersPagination() {
     })
   })
 }
-
+******************************/
 
 function Search() {
   const inpValue = document.querySelector('[data-value]').value.toUpperCase();
