@@ -179,16 +179,18 @@ async function Keys() {
 
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
-  /******************************
-  const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
   
+  const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
+  /******************************
+  **
   for (var i = 0; i < Math.ceil(DataSize / size); i++) {
     PagesNumber.innerHTML += numberBtn(i, size);
     //PagesNumber.innerHTML = numberBtn(i, size) + PagesNumber.innerHTML;
   }
-  
-  pageIndex = Math.ceil(DataSize/size);
+  **
   ******************************/
+  pageIndex = Math.ceil(DataSize/size);
+
   await disabledBtns();
   //await numbersPagination();
 }
