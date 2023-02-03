@@ -3,7 +3,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
 import {
   getDatabase, ref, child, onValue, set, get, push, update, remove,
-  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore
+  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore, endAt,
 } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -22,6 +22,6 @@ let reference = 'Manga4Up/', list = 'List/';
 
 export {
   database, ref, child, onValue, set, get, push, update, remove,
-  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore,
+  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore, endAt,
   reference, list
 }

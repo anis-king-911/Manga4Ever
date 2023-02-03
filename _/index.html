@@ -106,6 +106,12 @@
         <button type="submit">On Hiatus</button>
       </form>
       
+      <form class="SortingFilter">
+        <button type="submit">Sort Asc</button>
+        <button type="submit">Sort Desc</button>
+        <button type="submit">Sort ById</button>
+      </form>
+      
       <table>
         <thead>
           <tr>
@@ -130,11 +136,16 @@
         </thead>
         <tbody class="referenceTbody"></tbody>
       </table>
-      <div class="Pagination">
-        <button class="OldDataBtn">Old Data</button>
-        <span class="PagesCount"></span>
-        <button class="NewDataBtn">New Data</button>
-      </div>
+      <section class="Pagination">
+        <div>
+          <button class="OldDataBtn">Old Data</button>
+          <span class="PagesCount"></span>
+          <button class="NewDataBtn">New Data</button>
+        </div>
+        <div>
+          <div class="PagesNumber"></div>
+        </div>
+      </section>
     </span>
   </main>
   

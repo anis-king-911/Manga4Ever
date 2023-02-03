@@ -37,7 +37,11 @@ function referenceRow(key, { ID, Title, Number, Cover, Type }) {
   `;
 }
 
-export { listRow, referenceRow }
+function numberBtn(i, s) {
+  return `<button page="${i+1}" from="${s*i}" to="${s*Number(i+1)}">${Number(i+1).toLocaleString('en-US', {minimumIntegerDigits: 3})}</button>`;
+}
+
+export { listRow, referenceRow, numberBtn }
 
 const insert = (arr, index, newItem) => [
   ...arr.slice(0, index),

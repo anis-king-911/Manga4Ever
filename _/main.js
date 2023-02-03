@@ -1,8 +1,8 @@
-import { listRow, referenceRow } from './components.js';
+import { listRow, referenceRow, numberBtn } from './components.js';
 
 import {
   database, ref, child, onValue, set, get, push, update, remove,
-  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore,
+  query, orderByChild, limitToLast, limitToFirst, startAfter, endBefore, endAt,
   reference, list
 } from './firebase.js';
 
@@ -25,10 +25,13 @@ let firstKey = null, lastKey = null, firstChild = null, lastChild = null;
 const getOldDataBtn = document.querySelector('.NewDataBtn');
 const getNewDataBtn = document.querySelector('.OldDataBtn');
 const PagesCount = document.querySelector('.PagesCount');
+const PagesNumber = document.querySelector('.PagesNumber');
 
 const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilter = document.querySelector('.StateFilter');
-const StateFilterBtns = StateFilter.querySelectorAll('button');
+const StateFilterBtns = StateFilter?.querySelectorAll('button');
+const SortingFilter = document.querySelector('.SortingFilter');
+const SortingFilterBtns = SortingFilter?.querySelectorAll('button');
 
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
@@ -176,8 +179,17 @@ async function Keys() {
 
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
-
+  
+  const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
+  
+  for (var i = 0; i < Math.ceil(DataSize / size); i++) {
+    PagesNumber.innerHTML += numberBtn(i, size);
+    //PagesNumber.innerHTML = numberBtn(i, size) + PagesNumber.innerHTML;
+  }
+  
+  pageIndex = Math.ceil(DataSize/size);
   await disabledBtns();
+  await numbersPagination();
 }
 
 async function disabledBtns() {
@@ -222,14 +234,13 @@ async function getData() {
     firstKey = Object.values(snapshot.val()).shift().ID;
     lastKey = Object.values(snapshot.val()).pop().ID;
 
+    Keys();
     disabledBtns();
   })
-
-  await Keys();
 }
 
 async function getNewData() {
-  await pageIndex++;
+  await pageIndex--;
   const databaseRef = await ref(database, reference);
   const databaseOrder = await query(databaseRef, orderByChild(referenceOrder));
   const databaseStart = await query(databaseOrder, endBefore(firstKey));
@@ -245,10 +256,14 @@ async function getNewData() {
 
     disabledBtns();
   })
+  
+  const buttons = document.querySelectorAll('.PagesNumber button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  buttons[pageIndex - 1].classList.add('active');
 }
 
 async function getOldData() {
-  await pageIndex--;
+  await pageIndex++;
   const databaseRef = await ref(database, reference);
   const databaseOrder = await query(databaseRef, orderByChild(referenceOrder));
   const databaseStart = await query(databaseOrder, startAfter(lastKey));
@@ -263,6 +278,49 @@ async function getOldData() {
     lastKey = Object.values(snapshot.val()).pop().ID;
 
     disabledBtns();
+  })
+  
+  const buttons = document.querySelectorAll('.PagesNumber button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  buttons[pageIndex - 1].classList.add('active');
+}
+
+async function GetWantedData(fromWantedKey, toWantedKey, pageNumber) {
+  pageIndex = pageNumber;
+  const databaseRef = await ref(database, reference);
+  const databaseOrder = await query(databaseRef, orderByChild(referenceOrder));
+  const databaseStart = await query(databaseOrder, startAfter(fromWantedKey));
+  const databaseEnd = await query(databaseStart, endAt(toWantedKey));
+  const databaseLimit = await query(databaseEnd, limitToLast(size));
+  
+  onValue(databaseLimit, (snapshot) => {
+    referenceTbody.innerHTML = '';
+    
+    Object.entries(snapshot.val()).reverse().map(( [key, data] ) => referenceTbody.innerHTML += referenceRow(key, data));
+  
+    firstKey = Object.values(snapshot.val()).shift().ID;
+    lastKey = Object.values(snapshot.val()).pop().ID;
+  
+    disabledBtns();
+  })
+}
+
+
+async function numbersPagination() {
+  const buttons = document.querySelectorAll('.PagesNumber button');
+  
+  //buttons[0].classList.add('active')
+  buttons[buttons.length-1].classList.add('active')
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      buttons.forEach(btn => btn.classList.remove('active'))
+      btn.classList.add('active');
+      const newPageIndex = Number(btn.getAttribute('page'));
+      const from = Number(btn.getAttribute('from'));
+      const to = Number(btn.getAttribute('to'));
+  
+      GetWantedData(from, to, newPageIndex);
+    })
   })
 }
 
@@ -288,6 +346,86 @@ function FilterSelection(label) {
     const state = book.getAttribute('data-state').indexOf(label)>-1;
     if(state) book.style.display = 'table-row';
   })
+}
+
+function SortAsc() {
+  const list = document.querySelector('.listTbody');
+  let switching = true, switchcount = 0, shouldSwitch, dir = "asc", i, c, b;
+  while (switching) {
+    switching = false;
+    c = list.getElementsByTagName("tr");
+    b = list.querySelectorAll('tr td:nth-child(3) p:nth-child(1)');
+    for (i = 0; i < (b.length - 1); i++) {
+      shouldSwitch = false;
+      if (dir === "asc") {
+        if (b[i].innerHTML.toLowerCase() > b[i + 1].innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      c[i].parentNode.insertBefore(c[i + 1], c[i]);
+      switching = true;
+      switchcount++;
+    }
+  }
+}
+
+function SortDesc() {
+  const list = document.querySelector('.listTbody');
+  let switching = true, switchcount = 0, shouldSwitch, dir = 'desc', i, c, b;
+  while (switching) {
+    switching = false;
+    c = list.getElementsByTagName("tr");
+    b = list.querySelectorAll('tr td:nth-child(3) p:nth-child(1)');
+    for (i = 0; i < (b.length - 1); i++) {
+      shouldSwitch = false;
+      if (dir === "desc") {
+        if (b[i].innerHTML.toLowerCase() < b[i + 1].innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      c[i].parentNode.insertBefore(c[i + 1], c[i]);
+      switching = true;
+      switchcount++;
+    }
+  }
+}
+
+function SortById() {
+  const list = document.querySelector('.listTbody');
+  let i, b, c, shouldSwitch, switching = true;
+  while (switching) {
+    switching = false;
+    c = list.getElementsByTagName("tr");
+    b = list.querySelectorAll('tr td:nth-child(2)');
+    for (i = 0; i < (b.length - 1); i++) {
+      shouldSwitch = false;
+
+      if (Number(b[i].innerHTML) > Number(b[i + 1].innerHTML)) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      c[i].parentNode.insertBefore(c[i + 1], c[i]);
+      switching = true;
+    }
+  }
+}
+
+function SortingWay(way) {
+  if(way === 'Asc') {
+    SortAsc();
+  } else if(way === 'Desc') {
+    SortDesc();
+  } else if(way === 'ById') {
+    SortById();
+  }
 }
 
 window.onload = async () => {
@@ -351,6 +489,18 @@ window.onload = async () => {
         const state = event.target.textContent;
         
         FilterSelection(state);
+      });
+    })
+    
+    SortingFilter.addEventListener('submit', event => event.preventDefault());
+    
+    SortingFilterBtns.forEach((Btn) => {
+      Btn.addEventListener('click', (event) => {
+        SortingFilterBtns.forEach(Btn => Btn.classList.remove('active'));
+        Btn.classList.add('active');
+        const Way = event.target.textContent.split(' ').pop();
+    
+        SortingWay(Way);
       });
     })
     
