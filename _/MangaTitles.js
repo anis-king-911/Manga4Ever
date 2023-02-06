@@ -1,4 +1,5 @@
 const names = [
+  "Gleipnir",
   "Sakamoto Days",
   "One Piece",
   "Fullmetal Alchemist",
