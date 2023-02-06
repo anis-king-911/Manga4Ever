@@ -85,6 +85,8 @@ function MangaUpdate(uid, { Title, Cover, Count, State, Type, CreationDate }) {
   }).then(() => {
     console.log('Manga update done');
     MangaUpdateForm.reset();
+    
+    window.close();
   }).catch(error => console.log(error))
 }
 
@@ -97,7 +99,9 @@ function VolumeUpdate(uid, { Title, Cover, VolNumber, Type }) {
   }).then(() => {
     console.log('Volume update done');
     MangaUpdateForm.reset();
-    Keys();
+    Keys
+    
+    window.close();
   }).catch(error => console.log(error))
 }
 
