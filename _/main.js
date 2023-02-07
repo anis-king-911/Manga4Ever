@@ -49,12 +49,12 @@ async function FormsID() {
   //console.log({listNewID, referenceNewID});
 }
 
-function MangaUpload({ ID, Title, Cover, Count, State, Type, CreationDate }) {
+function MangaUpload({ ID, Title, Cover, Count, State, Type, Time, CreationDate }) {
   const databaseRef = ref(database, list);
   const databasePush = push(databaseRef);
 
   set(databasePush, {
-    ID, Title, Cover, Count, State, Type, CreationDate
+    ID, Title, Cover, Count, State, Type, Time, CreationDate
   }).then( async () => {
     await FormsID();
     console.log('upload done');

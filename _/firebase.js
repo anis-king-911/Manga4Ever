@@ -18,7 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-let reference = 'Manga4Up/', list = 'List/';
+let reference = 'Manga4Ever/', list = 'List/';
 
 export {
   database, ref, child, onValue, set, get, push, update, remove,

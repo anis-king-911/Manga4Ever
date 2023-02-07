@@ -1,9 +1,9 @@
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import {
   getDatabase, ref, onValue
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
 const firebaseConfig = {
   databaseURL: "https://manga4ever-vercel-default-rtdb.europe-west1.firebasedatabase.app",
@@ -23,7 +23,7 @@ const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilterBtns = document.querySelectorAll('.StateFilter button');
 const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
 
-let reference = 'Manga4Up/', list = 'List/';
+let reference = 'Manga4Ever/', list = 'List/';
 
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
@@ -55,7 +55,7 @@ function SortAsc() {
   while (switching) {
     switching = false;
     c = list.getElementsByTagName("article");
-    b = list.querySelectorAll('article .Info h2 a');
+    b = list.querySelectorAll('article .Info h2');
     for (i = 0; i < (b.length - 1); i++) {
       shouldSwitch = false;
       if (dir === "asc") {
@@ -79,7 +79,7 @@ function SortDesc() {
   while (switching) {
     switching = false;
     c = list.getElementsByTagName("article");
-    b = list.querySelectorAll('article .Info h2 a');
+    b = list.querySelectorAll('article .Info h2');
     for (i = 0; i < (b.length - 1); i++) {
       shouldSwitch = false;
       if (dir === "desc") {
@@ -131,7 +131,8 @@ function getManga(Name, Type) {
   })
 }
 
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
+
   if(WindowPATH === '/' || WindowPATH === '/index.html') {
     getData();
 
@@ -161,4 +162,5 @@ window.onload = () => {
     const typeParam = WindowPARAMS.get('type');
     getManga(WindowREF, typeParam);
   }
-}
+
+})

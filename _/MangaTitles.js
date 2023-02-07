@@ -1,4 +1,8 @@
 const names = [
+  "Classroom of the Elite: Year 1",
+  "Classroom of the Elite: Year 2",
+  "Bakuman",
+  "Bleach",
   "Gleipnir",
   "Sakamoto Days",
   "One Piece",

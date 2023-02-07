@@ -102,6 +102,7 @@ td {
 }
 
 td:nth-child(3) {
+  width: 100%;
   padding: 10px;
   text-align: left;
 }
