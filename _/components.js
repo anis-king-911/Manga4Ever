@@ -10,7 +10,7 @@ function listRow(key, { ID, Title, Cover, Count, State, CreationDate }) {
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
       <td>
-        <p>${Title}: ${Count}</p>
+        <p>${Title}: ${Number(Count).toLocaleString('en-US', {minimumIntegerDigits: 3})}</p>
         <p>${new Date(CreationDate).toLocaleDateString('en-US', {dateStyle: 'long'})}</p>
       </td>
       <td>
@@ -20,13 +20,13 @@ function listRow(key, { ID, Title, Cover, Count, State, CreationDate }) {
     </tr>
   `
 }
-function referenceRow(key, { ID, Title, Number, Cover, Type }) {
+function referenceRow(key, { ID, Title, Number: VolNumber, Cover, Type }) {
   return `
     <tr id="${key}">
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
       <td>
-        <p>${Title}: ${Number}</p>
+        <p>${Title}: ${Number(VolNumber).toLocaleString('en-US', {minimumIntegerDigits: 3})}</p>
         <p>Type: ${Type}</p>
       </td>
       <td>

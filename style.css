@@ -47,6 +47,10 @@ form {
   font-style: unset;
 }
 
+.SearchFilter input {
+  width: 100%;
+}
+
 .StateFilter {
   display: flex;
   flex-wrap: wrap;
