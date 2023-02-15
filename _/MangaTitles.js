@@ -1,4 +1,5 @@
 const names = [
+  "Tensei shitara Slime Datta Ken",
   "Death Note Tokubetsu-hen",
   "Ansatsu Kyoushitsu",
   "Classroom of the Elite: Year 1",
