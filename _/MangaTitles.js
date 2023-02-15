@@ -1,4 +1,5 @@
 const names = [
+  "Death Note Tokubetsu-hen",
   "Ansatsu Kyoushitsu",
   "Classroom of the Elite: Year 1",
   "Classroom of the Elite: Year 2",
