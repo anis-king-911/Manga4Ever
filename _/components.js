@@ -1,10 +1,11 @@
 const StateBg = {
-  'Publishing': 'rgba(87, 255, 87, .5)',
-  'Finished': 'rgba(87, 87, 255, .5)',
-  'On Hiatus': 'rgba(255, 87, 87, .5)',
+  'Publishing': '#4ade80',
+  'Finished': '#60a5fa',
+  'Discontinued': '#f87171',
+  'On Hiatus': '#facc15',
 };
 
-function listRow(key, { ID, Title, Cover, Count, State, CreationDate }) {
+function listRow(key, { ID, Title, Cover, Count, State, Type, CreationDate }) {
   return `
     <tr data-state="${State}" id="${key}" style="background-color: ${StateBg[State]};">
       <td><img src="${Cover}" alt="${Title}" /></td>
@@ -14,11 +15,16 @@ function listRow(key, { ID, Title, Cover, Count, State, CreationDate }) {
         <p>${new Date(CreationDate).toLocaleDateString('en-US', {dateStyle: 'long'})}</p>
       </td>
       <td>
-        <button onclick="MangaRemove('${key}')">delete</button>
-        <a href="./edit.html#/${key}?ref=list" target="_blank"><button>edit</button></a>
+        <button class="delBtn" onclick="MangaRemove('${key}')">delete</button>
+        <a href="./edit.html#/${key}?ref=list" target="_blank">
+          <button class="ediBtn" >edit</button>
+        </a>
+        <a href="./manga.html#/${Title.replaceAll(' ', '_')}?type=${Type.replaceAll(' ', '_')}" target="_blank">
+          <button class="cheBtn" >check</button>
+        </a>
       </td>
     </tr>
-  `
+  `;
 }
 function referenceRow(key, { ID, Title, Number: VolNumber, Cover, Type }) {
   return `
@@ -30,8 +36,10 @@ function referenceRow(key, { ID, Title, Number: VolNumber, Cover, Type }) {
         <p>Type: ${Type}</p>
       </td>
       <td>
-        <button onclick="VolumeRemove('${key}')">delete</button>
-        <a href="./edit.html#/${key}?ref=manga4up" target="_blank"><button>edit</button></a>
+        <button class="delBtn" onclick="VolumeRemove('${key}')">delete</button>
+        <a href="./edit.html#/${key}?ref=manga4up" target="_blank">
+          <button class="ediBtn" >edit</button>
+        </a>
       </td>
     </tr>
   `;
@@ -55,7 +63,7 @@ class Manga {
 
     this.Title = Title;
     this.Cover = newCover;
-    this.Count = Count;
+    this.Count = Number(Count);
     this.State = State;
     this.Type = Type;
     this.CreationDate = Number(new Date(CreationDate).getTime());
@@ -86,7 +94,7 @@ class nManga {
 
     this.Title = Title;
     this.Cover = CoverCheck;
-    this.Count = Count;
+    this.Count = Number(Count);
     this.State = State;
     this.Type = Type;
     this.CreationDate = Number(new Date(CreationDate).getTime());

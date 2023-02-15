@@ -17,10 +17,12 @@ const MangaUpdateForm = document.querySelector('.MangaUpdateForm');
 const VolumeUpdateForm = document.querySelector('.VolumeUpdateForm');
 
 const listTbody = document.querySelector('.listTbody');
+const mangaTbody = document.querySelector('.mangaTbody');
 const referenceTbody = document.querySelector('.referenceTbody');
 
 let referenceOrder = 'ID', size = 10, pageIndex = 1;
 let firstKey = null, lastKey = null, firstChild = null, lastChild = null;
+let idDirection = true;
 
 const getOldDataBtn = document.querySelector('.NewDataBtn');
 const getNewDataBtn = document.querySelector('.OldDataBtn');
@@ -156,6 +158,7 @@ async function OpenMangaEdit(form, id) {
     form.Count.value = data.Count;
     form.State.value = data.State;
     form.Cover.value = data.Cover;
+    form.Type.value = data.Type;
     form.CreationDate.value = new Date(data.CreationDate).toISOString().split('Z').shift();
   })
 }
@@ -185,18 +188,13 @@ async function Keys() {
   lastChild = data.pop().ID;
   
   const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
-  /******************************
-  **
   for (var i = 0; i < Math.ceil(DataSize / size); i++) {
     PagesNumber.innerHTML += numberBtn(i, size);
-    //PagesNumber.innerHTML = numberBtn(i, size) + PagesNumber.innerHTML;
   }
-  **
-  ******************************/
   pageIndex = Math.ceil(DataSize/size);
 
   await disabledBtns();
-  //await numbersPagination();
+  await numbersPagination();
 }
 
 async function disabledBtns() {
@@ -225,6 +223,20 @@ function getList() {
     listTbody.innerHTML = '';
 
     Object.entries(snapshot.val()).reverse().map(( [key, data] ) => listTbody.innerHTML += listRow(key, data));
+  })
+}
+
+async function getManga(title, type) {
+  const databaseRef = ref(database, reference);
+  
+  onValue(databaseRef, async (snapshot) => {
+    mangaTbody.innerHTML = '';
+    
+    const Snaps = Object.entries(snapshot.val());
+    const titleFilter = Snaps.filter(( [key, item] ) => item['Title'] === title.replaceAll('_', ' '));
+    const typeFilter = titleFilter.filter(( [key, item] ) => item['Type'] === type.replaceAll('_', ' '));
+    
+    typeFilter.reverse().map(( [key, data] ) => mangaTbody.innerHTML += referenceRow(key, data));
   })
 }
 
@@ -264,9 +276,9 @@ async function getNewData() {
     disabledBtns();
   })
   
-  //const buttons = document.querySelectorAll('.PagesNumber button');
-  //buttons.forEach(btn => btn.classList.remove('active'));
-  //buttons[pageIndex - 1].classList.add('active');
+  const buttons = document.querySelectorAll('.PagesNumber button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  buttons[pageIndex - 1].classList.add('active');
 }
 
 async function getOldData() {
@@ -287,12 +299,11 @@ async function getOldData() {
     disabledBtns();
   })
   
-  //const buttons = document.querySelectorAll('.PagesNumber button');
-  //buttons.forEach(btn => btn.classList.remove('active'));
-  //buttons[pageIndex - 1].classList.add('active');
+  const buttons = document.querySelectorAll('.PagesNumber button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  buttons[pageIndex - 1].classList.add('active');
 }
 
-/******************************
 async function GetWantedData(fromWantedKey, toWantedKey, pageNumber) {
   pageIndex = pageNumber;
   const databaseRef = await ref(database, reference);
@@ -316,7 +327,6 @@ async function GetWantedData(fromWantedKey, toWantedKey, pageNumber) {
 async function numbersPagination() {
   const buttons = document.querySelectorAll('.PagesNumber button');
   
-  //buttons[0].classList.add('active')
   buttons[buttons.length-1].classList.add('active')
   buttons.forEach((btn) => {
     btn.addEventListener('click', (event) => {
@@ -330,7 +340,6 @@ async function numbersPagination() {
     })
   })
 }
-******************************/
 
 function Search() {
   const inpValue = document.querySelector('[data-value]').value.toUpperCase();
@@ -403,7 +412,7 @@ function SortDesc() {
   }
 }
 
-function SortById() {
+function SortById(direction) {
   const list = document.querySelector('.listTbody');
   let i, b, c, shouldSwitch, switching = true;
   while (switching) {
@@ -412,11 +421,23 @@ function SortById() {
     b = list.querySelectorAll('tr td:nth-child(2)');
     for (i = 0; i < (b.length - 1); i++) {
       shouldSwitch = false;
-
-      if (Number(b[i].innerHTML) > Number(b[i + 1].innerHTML)) {
-        shouldSwitch = true;
-        break;
+      
+      if(direction === false) {
+      
+        if (Number(b[i].innerHTML) > Number(b[i + 1].innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      
+      } else if (direction === true) {
+        
+        if (Number(b[i].innerHTML) < Number(b[i + 1].innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+        
       }
+      
     }
     if (shouldSwitch) {
       c[i].parentNode.insertBefore(c[i + 1], c[i]);
@@ -431,13 +452,16 @@ function SortingWay(way) {
   } else if(way === 'Desc') {
     SortDesc();
   } else if(way === 'ById') {
-    SortById();
+    idDirection = !idDirection;
+    
+    SortById(idDirection);
   }
 }
 
-window.onload = async () => {
+window.addEventListener('DOMContentLoaded', async (event) => {
   const { names } = await import('./MangaTitles.js');
   const editType = WindowPARAMS.get('ref');
+  const checkType = WindowPARAMS.get('type');
   
   if(WindowPATH === '/_/' || WindowPATH === '/_/index.html') {
     [...new Set(names)].sort().forEach((name) => {
@@ -511,6 +535,10 @@ window.onload = async () => {
       });
     })
     
+  } else if(WindowPATH === '/_/manga.html' && WindowREF !== '') {
+    
+    getManga(WindowREF, checkType);
+    
   } else if(WindowPATH === '/_/edit.html' && editType === 'list') {
     VolumeUpdateForm.style.display = 'none';
 
@@ -558,7 +586,7 @@ window.onload = async () => {
       VolumeUpdate(WindowREF, newVolume);
     })
   }
-}
+});
 
 window.MangaRemove = MangaRemove;
 window.VolumeRemove = VolumeRemove;

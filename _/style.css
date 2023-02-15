@@ -19,7 +19,8 @@ img {
   max-width: 50px;
   margin: 0 auto;
   display: block;
-  border-radius: 4px;
+  border-radius: 6px;
+  object-fit: cover;
   box-shadow: 0 0 2px rgba(0, 0, 0, .5);
 }
 
@@ -47,7 +48,9 @@ nav button {
 }
 
 nav button.active {
-  background: rgba(87, 233, 145, 1);
+  color: #065f46;
+  background: #34d399;
+  border-color: #065f46;
 }
 
 form {
@@ -55,9 +58,7 @@ form {
   max-width: 600px;
   padding: 10px;
   margin: 10px auto;
-  display: grid;
-  grid-gap: 10px;
-  border-radius: 10px;
+  border-radius: 6px;
   box-shadow: 0 0 4px rgb(0 0 0 / 30%);
 }
 
@@ -90,10 +91,6 @@ table {
   margin: 0 auto;
 }
 
-/* table:last-child {
-  min-height: 390px;
-} */
-
 td {
   border: 1px solid #000;
   border-radius: 6px;
@@ -107,7 +104,11 @@ td:nth-child(3) {
   text-align: left;
 }
 
-td /* :nth-child(3) */ p {
+td:last-child {
+  background: #fff;
+}
+
+td p {
   padding: 0;
   margin: 0;
 }
@@ -119,54 +120,76 @@ td button {
   font-weight: bolder;
 }
 
-tr button:first-child {
-  background: rgb(213, 48, 62);
+tr button.delBtn {
+  background: #f87171;
 }
 
-tr button:last-child {
-  background: rgb(213, 213, 62);
+tr button.ediBtn {
+  background: #facc15;
+}
+
+tr button.cheBtn {
+  background: #60a5fa;
+}
+
+.MangaForm, .VolumeForm {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.MangaForm button, .VolumeForm button {
+  color: #166534;
+  font-weight: bolder;
+  padding: 6px 0;
+  background: #4ade80;
+  border: 1px solid #166534;
+  border-radius: 6px;
 }
 
 .SearchFilter {
+  gap: 2px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .SearchFilter input {
-  background: none;
+  background: transparent;
   border: none;
   width: 100%;
 }
 
 .SearchFilter button {
-  background: none;
+  background: transparent;
   border: none;
   width: 10%;
 }
 
 .StateFilter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .StateFilter button {
   border: 1px solid #000;
   border-radius: 6px;
   transition: 600ms;
+  width: unset;
 }
 
 .StateFilter button.active {
-  background: rgba(87, 233, 145, 1);
+  color: #065f46;
+  background: #34d399;
+  border-color: #065f46;
 }
 
 .SortingFilter {
+  gap: 2px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2px;
 }
 
 .SortingFilter button {
@@ -176,7 +199,9 @@ tr button:last-child {
 }
 
 .SortingFilter button.active {
-  background: rgba(87, 233, 145, 1);
+  color: #065f46;
+  background: #34d399;
+  border-color: #065f46;
 }
 
 .Pagination {
@@ -221,7 +246,9 @@ tr button:last-child {
 }
 
 .PagesNumber button.active {
-  background: rgba(87, 233, 145, 1);
+  color: #065f46;
+  background: #34d399;
+  border-color: #065f46;
 }
 
 @media only screen and (max-width: 500px) {

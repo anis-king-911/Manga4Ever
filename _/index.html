@@ -44,6 +44,7 @@
           <select name="State" id="State">
             <option value="Publishing">Publishing</option>
             <option value="Finished">Finished</option>
+            <option value="Discontinued">Discontinued</option>
             <option value="On Hiatus">On Hiatus</option>
           </select>
         </div>
@@ -95,14 +96,15 @@
     <span x-show="openTab === 3" x-cloak>
       
       <form class="SearchFilter">
-        <input type="text" name="Search" placeholder="Search..." data-value />
         <button type="submit">&#128269;</button>
+        <input type="text" name="Search" placeholder="Search..." data-value />
       </form>
       
       <form class="StateFilter">
         <button type="submit">Show All</button>
         <button type="submit">Publishing</button>
         <button type="submit">Finished</button>
+        <button type="submit">Discontinued</button>
         <button type="submit">On Hiatus</button>
       </form>
       

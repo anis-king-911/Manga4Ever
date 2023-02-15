@@ -23,7 +23,7 @@ const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilterBtns = document.querySelectorAll('.StateFilter button');
 const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
 
-let reference = 'Manga4Ever/', list = 'List/';
+let reference = 'VolumeList/', list = 'MangaList/';
 
 forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
