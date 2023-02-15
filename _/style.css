@@ -14,6 +14,13 @@ button {
   cursor: pointer;
 }
 
+a {
+  display: block;
+  width: 100%;
+  color: #000;
+  text-decoration: none;
+}
+
 img {
   width: 100%;
   max-width: 50px;
@@ -45,12 +52,15 @@ nav button {
   border: 1px solid #000;
   border-radius: 6px;
   transition: 600ms;
+  padding: 0;
 }
 
 nav button.active {
-  color: #065f46;
   background: #34d399;
-  border-color: #065f46;
+}
+
+nav button a {
+  padding: 2px 6px;
 }
 
 form {
@@ -138,11 +148,10 @@ tr button.cheBtn {
 }
 
 .MangaForm button, .VolumeForm button {
-  color: #166534;
   font-weight: bolder;
   padding: 6px 0;
   background: #4ade80;
-  border: 1px solid #166534;
+  border: 1px solid #000;
   border-radius: 6px;
 }
 
@@ -180,35 +189,32 @@ tr button.cheBtn {
 }
 
 .StateFilter button.active {
-  color: #065f46;
   background: #34d399;
-  border-color: #065f46;
 }
 
 .SortingFilter {
   gap: 2px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
 }
 
 .SortingFilter button {
   border: 1px solid #000;
   border-radius: 6px;
   transition: 600ms;
+  width: unset;
 }
 
 .SortingFilter button.active {
-  color: #065f46;
   background: #34d399;
-  border-color: #065f46;
 }
 
 .Pagination {
   width: 90%;
   max-width: 600px;
   padding: 4px;
-  margin: 2px auto;
+  margin: 4px auto 10px;
   border: 1px solid #000;
   border-radius: 6px;
 }
@@ -232,9 +238,9 @@ tr button.cheBtn {
   text-align: center;
 }
 
-.PagesNumber {
+.PagesNumber { /*
   gap: 6px;
-  padding: 6px 0;
+  padding: 6px 0; */
   overflow: auto;
   white-space: nowrap;
 }
@@ -246,9 +252,7 @@ tr button.cheBtn {
 }
 
 .PagesNumber button.active {
-  color: #065f46;
   background: #34d399;
-  border-color: #065f46;
 }
 
 @media only screen and (max-width: 500px) {

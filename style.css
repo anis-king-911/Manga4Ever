@@ -107,6 +107,34 @@ form {
   background: rgba(0, 0, 0, .18);
 }
 
+.TypeFilter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.TypeFilter button {
+  border: none;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .14);
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: bolder;
+  transition: 800ms;
+}
+
+.TypeFilter button.active {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .2);
+}
+
+.TypeFilter button:hover {
+  border: 1px solid #000;
+  background: rgba(0, 0, 0, .18);
+}
+
 input[type="text"] {
   font-size: 20px;
   padding: 10px;

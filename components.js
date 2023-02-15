@@ -1,6 +1,6 @@
 function Manga({ ID, Title, Cover, Count, State, Type, CreationDate }) {
   return `
-<article data-state="${State}" id="${ID}">
+<article data-state="${State}" data-type="${Type}" id="${ID}">
   <div class="Cover">
     <img src="${Cover}" alt="${Title}">
   </div>

@@ -22,6 +22,7 @@ const forms = document.querySelectorAll('form');
 const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilterBtns = document.querySelectorAll('.StateFilter button');
 const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
+const TypeFilterBtns = document.querySelectorAll('.TypeFilter button')
 
 let reference = 'VolumeList/', list = 'MangaList/';
 
@@ -39,13 +40,23 @@ function Search() {
   })
 }
 
-function Filter(state) {
+function StateFilter(state) {
   const books = document.querySelectorAll('[data-state]');
 
   if(state === 'Show All') state = ''
   books.forEach((book) => {
     book.classList.add('Hidden');
     if(book.getAttribute('data-state').indexOf(state) > -1) book.classList.remove('Hidden');
+  })
+}
+
+function TypeFilter(type) {
+  const books = document.querySelectorAll('[data-type]');
+
+  if(type === 'Show All') type = ''
+  books.forEach((book) => {
+    book.classList.add('Hidden');
+    if(book.getAttribute('data-type').indexOf(type) > -1) book.classList.remove('Hidden');
   })
 }
 
@@ -145,7 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
 
         const state = event.target.textContent ||event.target.innerText;
-        Filter(state);
+        StateFilter(state);
       })
     })
 
@@ -158,6 +169,18 @@ window.addEventListener('DOMContentLoaded', () => {
         SortDirection(Sort.split(' ').pop());
       })
     })
+
+    TypeFilterBtns[0].classList.add('active');
+    TypeFilterBtns.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        TypeFilterBtns.forEach(btn => btn.classList.remove('active'));
+        btn.classList.add('active');
+
+        const Type = event.target.textContent || event.target.innerText;
+        TypeFilter(Type);
+      })
+    })
+
   } else if(WindowPATH === '/manga.html' && WindowREF !== '') {
     const typeParam = WindowPARAMS.get('type');
     getManga(WindowREF, typeParam);

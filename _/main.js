@@ -186,13 +186,17 @@ async function Keys() {
 
   firstChild = data.shift().ID;
   lastChild = data.pop().ID;
-  /*
+
   const DataSize = await get(databaseOrder).then(snapshot => snapshot.size);
+
+  /*
   for (var i = 0; i < Math.ceil(DataSize / size); i++) {
     PagesNumber.innerHTML += numberBtn(i, size);
   }
-  pageIndex = Math.ceil(DataSize/size);
   */
+
+  pageIndex = Math.ceil(DataSize/size);
+
   await disabledBtns();
   //await numbersPagination();
 }
@@ -527,6 +531,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
     
     SortingFilter.addEventListener('submit', event => event.preventDefault());
     
+    SortingFilterBtns[SortingFilterBtns.length-1].classList.add('active');
     SortingFilterBtns.forEach((Btn) => {
       Btn.addEventListener('click', (event) => {
         SortingFilterBtns.forEach(Btn => Btn.classList.remove('active'));
