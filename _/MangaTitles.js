@@ -31,7 +31,7 @@ const names = [
   "Shokugeki no Souma",
   "Mob Psycho 100",
   "Overlord",
-  "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
+  "Kaguya-sama: Love is War",
   "Dungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka",
   "Highschool of the Dead",
   "Kakegurui",
