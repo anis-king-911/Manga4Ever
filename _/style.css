@@ -39,6 +39,7 @@ header {
   padding: 4px;
   margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  background: #fff;
   position: sticky;
   top: 0;
 }
