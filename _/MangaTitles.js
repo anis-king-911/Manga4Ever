@@ -1,5 +1,26 @@
 const names = [
-  "Go-Toubun no Hanayome",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "We Never Learn",
+  "Mob Psycho 100",
+  "Mushoku Tensei: Isekai Ittara Honki Dasu",
+  "New Game!",
+  "Nisekoi",
+  "Jibaku Shounen Hanako-kun",
+  "Prison School",
+  "Devils Line",
+  "Devils Line II [Gyakushuu]",
   "Tensei shitara Slime Datta Ken",
   "Death Note Tokubetsu-hen",
   "Ansatsu Kyoushitsu",
@@ -19,7 +40,6 @@ const names = [
   "Shigatsu wa Kimi no Uso",
   "Jibaku Shounen Hanako-kun",
   "Dragon Ball",
-  "Bakuman.",
   "Wotaku ni Koi wa Muzukashii",
   "Detective Conan",
   "Tonikaku Kawaii",
@@ -100,4 +120,4 @@ const names = [
   "Dead Tube",
 ];
 
-export { names }
+export default names;
