@@ -16,7 +16,7 @@ function listRow(key, { ID, Title, Cover, Count, State, Type, CreationDate }) {
       </td>
       <td>
         <button class="delBtn" onclick="MangaRemove('${key}')">delete</button>
-        <a href="./edit.html#/${key}?ref=list" target="_blank">
+        <a href="./edit.html#/${key}?ref=mangalist" target="_blank">
           <button class="ediBtn" >edit</button>
         </a>
         <a href="./manga.html#/${Title.replaceAll(' ', '_')}?type=${Type.replaceAll(' ', '_')}" target="_blank">
@@ -37,7 +37,7 @@ function referenceRow(key, { ID, Title, Number: VolNumber, Cover, Type }) {
       </td>
       <td>
         <button class="delBtn" onclick="VolumeRemove('${key}')">delete</button>
-        <a href="./edit.html#/${key}?ref=manga4up" target="_blank">
+        <a href="./edit.html#/${key}?ref=volumelist" target="_blank">
           <button class="ediBtn" >edit</button>
         </a>
       </td>

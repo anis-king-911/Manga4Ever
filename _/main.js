@@ -546,11 +546,11 @@ window.addEventListener('DOMContentLoaded', async (event) => {
     
     getManga(WindowREF, checkType);
     
-  } else if(WindowPATH === '/_/edit.html' && editType === 'list') {
+  } else if(WindowPATH === '/_/edit.html' && editType === 'mangalist') {
     VolumeUpdateForm.style.display = 'none';
 
-    names.forEach((name) => {
-      MangaUpdateForm.querySelector('#Titles').innerHTML +=
+    [...new Set(names)].sort().forEach((name) => {
+      MangaForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     })
 
@@ -570,11 +570,11 @@ window.addEventListener('DOMContentLoaded', async (event) => {
 
       MangaUpdate(WindowREF, newManga);
     })
-  } else if(WindowPATH === '/_/edit.html' && editType === 'manga4up') {
+  } else if(WindowPATH === '/_/edit.html' && editType === 'volumelist') {
     MangaUpdateForm.style.display = 'none';
 
-    names.forEach((name) => {
-      VolumeUpdateForm.querySelector('#Titles').innerHTML +=
+    [...new Set(names)].sort().forEach((name) => {
+      VolumeForm.querySelector('#Titles').innerHTML +=
         `<option value="${name}">${name}</option>`;
     })
 
