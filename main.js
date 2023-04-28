@@ -1,8 +1,17 @@
+/**
+*
+* future updates
+* 1. change sorting & filtering systems
+* 2. change the design UI
+* 3. add LMP ( load more pagination )
+*
+*/
+
 import {
   initializeApp
 } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import {
-  getDatabase, ref, onValue
+  getDatabase, ref, onValue, get, query, orderByChild, startAfter, endAt
 } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -12,178 +21,71 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-const WindowPARAMS = new URLSearchParams(window.location.href.split('?').pop());
-const WindowREF = window.location.href.split('/').pop().split('?').shift();
-const WindowPATH = window.location.pathname;
+const WindowPath = window.location.pathname;
+const WindowSearch = window.location.search;
+const WindowParams = new URLSearchParams(WindowSearch);
+const WindowTitle = WindowParams.has('title') ? WindowParams.get('title').replaceAll('_', ' ') : null;
+const WindowType = WindowParams.has('type') ? WindowParams.get('type').replaceAll('_', ' ') : null;
 
 const Container = document.querySelector('.Container');
-const forms = document.querySelectorAll('form');
+const lmpBtn = document.querySelector('.lmp button');
+const allForms = document.querySelectorAll('form');
 
-const SearchFilter = document.querySelector('.SearchFilter');
-const StateFilterBtns = document.querySelectorAll('.StateFilter button');
-const SortingFilterBtns = document.querySelectorAll('.SortingFilter button');
-const TypeFilterBtns = document.querySelectorAll('.TypeFilter button')
+let MainList = 'MainList/', CoversList = 'CoversList/';
+let order = 'ID', size = 6, allPages = [], wantedPage = 1;
 
-let reference = 'VolumeList/', list = 'MangaList/';
+allForms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
-forms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
-
-function Search() {
-  const inpValue = document.querySelector('[data-value]').value.toUpperCase();
-  const Articles = document.querySelectorAll('[data-state]');
-
-  Articles.forEach((Article) => {
-    const Content = Article.querySelector('h2');
-    const Title = Content.textContent.toUpperCase() || Content.innerText.toUpperCase();
-    
-    Title.indexOf(inpValue) > -1 ? Article.style.display = '' : Article.style.display = 'none';
-  })
-}
-
-function StateFilter(state) {
-  const books = document.querySelectorAll('[data-state]');
-
-  if(state === 'Show All') state = ''
-  books.forEach((book) => {
-    book.classList.add('Hidden');
-    if(book.getAttribute('data-state').indexOf(state) > -1) book.classList.remove('Hidden');
-  })
-}
-
-function TypeFilter(type) {
-  const books = document.querySelectorAll('[data-type]');
-
-  if(type === 'Show All') type = ''
-  books.forEach((book) => {
-    book.classList.add('Hidden');
-    if(book.getAttribute('data-type').indexOf(type) > -1) book.classList.remove('Hidden');
-  })
-}
-
-function SortAsc() {
-  const list = document.querySelector('.Container');
-  let switching = true, switchcount = 0, shouldSwitch, dir = "asc", i, c, b;
-  while (switching) {
-    switching = false;
-    c = list.getElementsByTagName("article");
-    b = list.querySelectorAll('article .Info h2');
-    for (i = 0; i < (b.length - 1); i++) {
-      shouldSwitch = false;
-      if (dir === "asc") {
-        if (b[i].innerHTML.toLowerCase() > b[i + 1].innerHTML.toLowerCase()) {
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      c[i].parentNode.insertBefore(c[i + 1], c[i]);
-      switching = true;
-      switchcount++;
-    }
-  }
-}
-
-function SortDesc() {
-  const list = document.querySelector('.Container');
-  let switching = true, switchcount = 0, shouldSwitch, dir = 'desc', i, c, b;
-  while (switching) {
-    switching = false;
-    c = list.getElementsByTagName("article");
-    b = list.querySelectorAll('article .Info h2');
-    for (i = 0; i < (b.length - 1); i++) {
-      shouldSwitch = false;
-      if (dir === "desc") {
-        if (b[i].innerHTML.toLowerCase() < b[i + 1].innerHTML.toLowerCase()) {
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      c[i].parentNode.insertBefore(c[i + 1], c[i]);
-      switching = true;
-      switchcount++;
-    }
-  }
-}
-
-function SortDirection(way) {
-  console.log(way);
-  if(way === 'Asc') {
-    SortAsc();
-  } else if(way === 'Desc') {
-    SortDesc();
-  }
-}
-
-function getData() {
-  const databaseRef = ref(database, list);
-  onValue(databaseRef, async (snapshot) => {
-    Container.innerHTML = '';
-    const { Manga } = await import('./components.js');
-    Object.values(snapshot.val()).reverse().map((data) => {
-      Container.innerHTML += Manga(data);
+async function gatMainList(pageIndex) {
+  const dataRef = ref(database, MainList);
+  const dataOrd = query(dataRef, orderByChild(order));
+  const dataSize = await get(dataOrd).then(res => res.size);
+  const dataPages = Math.ceil(dataSize/size);
+  
+  for (var index = 0; index < dataPages; index++) {
+    allPages.push({
+      from: Number(index*size),
+      to: Number((index+1)*size)
     })
+  }
+  
+  let reversedPages = allPages.reverse();
+  const dataStr = query(dataOrd, startAfter(reversedPages[pageIndex - 1].from));
+  const dataEnd = query(dataStr, endAt(reversedPages[pageIndex - 1].to));
+  
+  onValue(dataEnd, async (snaps) => {
+    const { Manga } = await import('./components.js');
+    const snapshot = Object.values(snaps.val()).reverse();
+    
+    snapshot.map(data => Container.innerHTML += Manga(data))
   })
 }
 
-
-function getManga(Name, Type) {
-  const databaseRef = ref(database, reference);
-  onValue(databaseRef, async (snapshot) => {
+function getCoversList(name, type) {
+  document.title = `${type} | ${name}`
+  const dataRef = ref(database, CoversList);
+  const dataOrd = query(dataRef, orderByChild(order));
+  
+  onValue(dataOrd, async (snaps) => {
     Container.innerHTML = '';
     const { Volume } = await import('./components.js');
-    Object.values(snapshot.val()).reverse().map((data) => {
-      if(data.Title === Name.replaceAll('_', ' ') && data.Type === Type.replaceAll('_', ' ')) {
-        Container.innerHTML += Volume(data);
-      }
-    })
+    const snapshot = Object.values(snaps.val()).reverse();
+    const filtered = snapshot.filter((item) => {
+      return item['Title'] === name;
+    }).filter((item) => {
+      return item['Type'] === type;
+    });
+    
+    filtered.map(data => Container.innerHTML += Volume(data))
   })
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
-  if(WindowPATH === '/' || WindowPATH === '/index.html') {
-    getData();
-
-    SearchFilter.Search.addEventListener('keyup', () => Search());
-
-    StateFilterBtns[0].classList.add('active');
-    StateFilterBtns.forEach((btn) => {
-      btn.addEventListener('click', (event) => {
-        StateFilterBtns.forEach(btn => btn.classList.remove('active'));
-        btn.classList.add('active');
-
-        const state = event.target.textContent ||event.target.innerText;
-        StateFilter(state);
-      })
-    })
-
-    SortingFilterBtns.forEach((btn) => {
-      btn.addEventListener('click', (event) => {
-        SortingFilterBtns.forEach(btn => btn.classList.remove('active'));
-        btn.classList.add('active');
-
-        const Sort = event.target.textContent || event.target.innerText;
-        SortDirection(Sort.split(' ').pop());
-      })
-    })
-
-    TypeFilterBtns[0].classList.add('active');
-    TypeFilterBtns.forEach((btn) => {
-      btn.addEventListener('click', (event) => {
-        TypeFilterBtns.forEach(btn => btn.classList.remove('active'));
-        btn.classList.add('active');
-
-        const Type = event.target.textContent || event.target.innerText;
-        TypeFilter(Type);
-      })
-    })
-
-  } else if(WindowPATH === '/manga.html' && WindowREF !== '') {
-    const typeParam = WindowPARAMS.get('type');
-    getManga(WindowREF, typeParam);
+  if(WindowPath === '/' || WindowPath === '/index.html') {
+    gatMainList(wantedPage);
+    
+    lmpBtn.addEventListener('click', () => gatMainList((wantedPage++)+1))
+  } else if(WindowPath === '/manga.html') {
+    getCoversList(WindowTitle, WindowType);
   }
-
 })

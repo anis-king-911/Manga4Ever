@@ -28,6 +28,8 @@ span {
   font-weight: bolder;
 }
 
+/*
+
 form {
   width: 90%;
   margin: 10px auto;
@@ -143,9 +145,21 @@ input[type="text"] {
   border-radius: 6px;
 }
 
+*/
+
+.lmp {
+  width: 90%;
+  margin: 0 auto 10px;
+  padding: 10px;
+}
+
+.lmp button {
+  width: 100%;
+}
+
 .Container {
   width: 90%;
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 10px;
   display: grid;
   grid-gap: 10px;
@@ -189,6 +203,11 @@ article.Hidden {
   text-align: center;
 }
 
+.Info h4 {
+  text-align: right;
+  margin-bottom: 0;
+}
+
 .Actions {
   width: 100%;
   padding: 10px 0 0;
@@ -203,6 +222,14 @@ article.Hidden {
   border: 1px solid #000;
   border-radius: 6px;
 }
+
+/*
+*
+* 1. change the responsiveness
+*  - from media query
+*  - to grid layout or something like that
+*
+***/
 
 @media only screen and (max-width: 1115px) {
   .Container {
