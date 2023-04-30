@@ -1,27 +1,17 @@
 import { MangaDelete } from './delete/manga.js';
 import { VolumeDelete } from './delete/volume.js';
 
-const StateBg = {
-  'Publishing': '#4ade80',
-  'Finished': '#60a5fa',
-  'Discontinued': '#f87171',
-  'On Hiatus': '#facc15',
-};
-
-const States = ['Publishing', 'Finished', 'Discontinued', 'On Hiatus'];
-const Types = ['Manga', 'Light Novel', 'One Shot'];
-
-const toDigits = (x,n) => Number(x).toLocaleString('en-US', {minimumIntegerDigits: Number(n)})
-const toDates = (x,t) => new Date(x).toLocaleDateString('en-US', {dateStyle: String(t)})
+import { StateBg, States, Types, toDigits, toDates } from './assets.js';
 
 function MangaRow(key, { ID, Title, Cover, VolCount, State, Type, Dates, Magazine }) {
   return `
-    <tr x-data="{openEdit: false}" data-state="${State}" id="${key}" style="background-color: ${StateBg[State]};">
+    <tr x-data="{openEdit: false}" data-state="${State}" style="background-color: ${StateBg[State]};">
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
       <td>
         <p>${Title}: ${toDigits(VolCount, 3)}</p>
         <p>${toDates(Dates['PubAt'], 'long')}</p>
+        <p>${Type}</p>
         <p>Magazine: ${Magazine}</p>
       </td>
       <td>
@@ -34,18 +24,18 @@ function MangaRow(key, { ID, Title, Cover, VolCount, State, Type, Dates, Magazin
         </a>
         
         <section x-show="openEdit" x-cloak>
-          ${EditMangaForm({ ID, Title, Cover, VolCount, State, Type, Dates, Magazine })}
+          ${EditMangaForm(key, { ID, Title, Cover, VolCount, State, Type, Dates, Magazine })}
         </section>
       </td>
     </tr> 
   `;
 }
 
-function EditMangaForm({ ID, Title, Cover, VolCount, State, Type, Dates, Magazine }) {
+function EditMangaForm(key, { ID, Title, Cover, VolCount, State, Type, Dates, Magazine }) {
   const Time = new Date(Dates['PubAt']).toISOString().split('T').shift();
   
   return `
-    <form x-on:submit.prevent="HandleMangaUpdate" class="MangaUpdateForm" autocapitalize="off">
+    <form x-on:submit.prevent="HandleMangaUpdate" class="MangaUpdateForm" autocapitalize="off" id="${key}">
       <button class="close" type="button" x-on:click="openEdit = ! openEdit">&times;</button>
       <div class="FormGroup">
         <label for="Title">Title</label>
@@ -62,7 +52,7 @@ function EditMangaForm({ ID, Title, Cover, VolCount, State, Type, Dates, Magazin
       </div>
       <div class="FormGroup">
         <label for="Magazine">Magazine</label>
-        <input type="text" list="Magazines" name="Magazine" id="Magazine" placeholder="Magazine..." />
+        <input type="text" list="Magazines" name="Magazine" id="Magazine" value="${Magazine}" placeholder="Magazine..." />
         <datalist id="Magazines"></datalist>
       </div>
       <div class="FormGroup">
@@ -89,8 +79,8 @@ function EditMangaForm({ ID, Title, Cover, VolCount, State, Type, Dates, Magazin
 }
 
 async function HandleMangaUpdate(event) {
-  const { MangaUpdate } = await import('.update/manga.js');
   const { Title, Cover, VolCount, State, Type, PubAt, Magazine } = event.target;
+  const key = event.target.getAttribute('id');
   
   const newManga = new nManga({
     Title: Title.value,
@@ -102,12 +92,13 @@ async function HandleMangaUpdate(event) {
     Magazine: Magazine.value
   });
   
-  MangaUpdate(newManga);
+  const { MangaUpdate } = await import('./update/manga.js');
+  MangaUpdate(key, newManga);
 }
 
 function VolumeRow(key, { ID, Title, VolNumber, Cover, Type, Dates }) {
   return `
-    <tr x-data="{openEdit: false}" id="${key}">
+    <tr x-data="{openEdit: false}">
       <td><img src="${Cover}" alt="${Title}" /></td>
       <td>${ID}</td>
       <td>
@@ -131,9 +122,10 @@ function VolumeRow(key, { ID, Title, VolNumber, Cover, Type, Dates }) {
 
 function EditVolumeForm({ ID, Title, VolNumber, Cover, Type, Dates }) {
   const Time = new Date(Dates['PubAt']).toISOString().split('T').shift();
-  
+  const key = Dates['CreAt'];
+
   return `
-    <form x-on:submit.prevent="HandleVolumeUpdate" class="VolumeUpdateForm" autocapitalize="off">
+    <form x-on:submit.prevent="HandleVolumeUpdate" class="VolumeUpdateForm" autocapitalize="off" id="${key}">
       <button class="close" type="button" x-on:click="openEdit = ! openEdit">&times;</button>
       <div class="FormGroup">
         <label for="Title">Title</label>
@@ -166,10 +158,10 @@ function EditVolumeForm({ ID, Title, VolNumber, Cover, Type, Dates }) {
 }
 
 async function HandleVolumeUpdate(event) {
-  const { VolumeUpdate } = await import('.update/volume.js');
   const { Title, Cover, VolNumber, Type, PubAt } = event.target;
+  const key = event.target.getAttribute('id');
 
-  const newManga = new nManga({
+  const newManga = new nVolume({
     Title: Title.value,
     Cover: Cover.value,
     VolNumber: VolNumber.value,
@@ -177,12 +169,9 @@ async function HandleVolumeUpdate(event) {
     PubAt: PubAt.value,
   });
 
-  VolumeUpdate(newManga);
+  const { VolumeUpdate } = await import('./update/volume.js');
+  VolumeUpdate(key, newManga);
 }
-
-//function numberBtn(i, s) {
-//  return `<button page="${i+1}" from="${s*i}" to="${s*Number(i+1)}">${Number(i+1).toLocaleString('en-US', {minimumIntegerDigits: 3})}</button>`;
-//}
 
 export { MangaRow, VolumeRow }
 
@@ -263,9 +252,8 @@ class nVolume {
   }
 }
 
-//export { nManga, nVolume }
-
 window.MangaDelete = MangaDelete;
 window.VolumeDelete = VolumeDelete;
+
 window.HandleMangaUpdate = HandleMangaUpdate;
 window.HandleVolumeUpdate = HandleVolumeUpdate;

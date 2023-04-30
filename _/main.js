@@ -7,40 +7,34 @@ const WindowType = WindowParams.has('type') ? WindowParams.get('type').replaceAl
 const allForms = document.querySelectorAll('form');
 const MangaForm = document.querySelector('.MangaForm');
 const VolumeForm = document.querySelector('.VolumeForm');
-//const MangaUpdateForm = document.querySelector('.MangaUpdateForm');
-//const VolumeUpdateForm = document.querySelector('.VolumeUpdateForm');
 
 const MangaTable = document.querySelector('.MangaTable');
 const VolumeTable = document.querySelector('.VolumeTable');
 
 const lmpMangaBtn = document.querySelector('.lmp button.Manga');
-//const lmpVolumeBtn = document.querySelector('.lmp button.Volume');
-//const ItemsCount = document.querySelector('.ItemsCount');
-//const paginationBtns = document.querySelectorAll('.Pagination button');
 let MangaPageIndex = 1, VolumePageIndex = 1;
 
 
 /*
-
+const MangaUpdateForm = document.querySelector('.MangaUpdateForm');
+const VolumeUpdateForm = document.querySelector('.VolumeUpdateForm');
+const lmpVolumeBtn = document.querySelector('.lmp button.Volume');
+const ItemsCount = document.querySelector('.ItemsCount');
+const paginationBtns = document.querySelectorAll('.Pagination button');
 const PagesNumber = document.querySelector('.PagesNumber');
-
 const SearchFilter = document.querySelector('.SearchFilter');
 const StateFilter = document.querySelector('.StateFilter');
 const StateFilterBtns = StateFilter?.querySelectorAll('button');
 const SortingFilter = document.querySelector('.SortingFilter');
 const SortingFilterBtns = SortingFilter?.querySelectorAll('button');
-
+*/
 
 async function fetchInputs() {
   const opt = (item) => `<option value="${item}">${item}</option>`;
   
   const TitlesApi = 'https://api4ever.vercel.app/titles';
-  const MagazinesApi = 'https://api4ever.vercel.app/magazines';
-  
   const TitlesRes = await fetch(TitlesApi).then(res => res.json());
-  const MagazinesRes = await fetch(MagazinesApi).then(res => res.json());
-  
-  const _Magazines = MangaForm.querySelector('#Magazines');
+
   const _MTitles = MangaForm.querySelector('#Titles');
   const _VTitles = VolumeForm.querySelector('#Titles');
   
@@ -49,11 +43,13 @@ async function fetchInputs() {
     _VTitles.innerHTML += opt(item);
   });
   
-  console.log([...new Set(MagazinesRes)].length);
+  //const MagazinesApi = 'https://api4ever.vercel.app/magazines';
+  //const MagazinesRes = await fetch(MagazinesApi).then(res => res.json());  
+  //const _Magazines = MangaForm.querySelector('#Magazines');
+  
+  //console.log([...new Set(MagazinesRes)].length);
   //[...new Set(MagazinesRes)].sort().map(item => _Magazines.innerHTML += opt(item))
 }
-*/
-
 
 window.addEventListener('DOMContentLoaded', async (event) => {
   allForms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
@@ -61,7 +57,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
   if(WindowPath === '/_/' || WindowPath === '/_/index.html') {
     const { FormsID } = await import('./functions/FormsID.js');
     FormsID(MangaForm, VolumeForm);
-    //fetchInputs();
+    fetchInputs();
 
     MangaForm.addEventListener('submit', async (event) => {
       const { MangaUpload } = await import('./functions/upload/manga.js');
@@ -78,6 +74,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
       });
     
       MangaUpload(newManga);
+      MangaForm.reset();
     })
     
     VolumeForm.addEventListener('submit', async (event) => {
@@ -93,6 +90,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
       });
     
       VolumeUpload(newVolume);
+      VolumeForm.reset();
     })
     
     const { MangaRead } = await import('./functions/read/manga.js');
