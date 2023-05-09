@@ -1,18 +1,19 @@
-/**
+/***
 *
-* future updates
-* 1. change sorting & filtering systems
-* 2. change the design UI
-* 3. add LMP ( load more pagination )
+* futer updates
+*  - make the date at '/manga.html' a button to filter
+*  - download button with the expand button
+*  - put them all in one container
+*  - hover effect for the buttons to show down
 *
-*/
+***/
 
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
 import {
-  getDatabase, ref, onValue, get, query, orderByChild, startAfter, endAt
-} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+  getDatabase, ref, onValue, query, orderByChild
+} from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
 const firebaseConfig = {
   databaseURL: "https://manga4ever-vercel-default-rtdb.europe-west1.firebasedatabase.app",
@@ -32,43 +33,49 @@ const lmpBtn = document.querySelector('.lmp button');
 const allForms = document.querySelectorAll('form');
 
 let MainList = 'MainList/', CoversList = 'CoversList/';
-let order = 'ID', size = 6, allPages = [], wantedPage = 1;
+let order = 'ID', size = 15, allPages = [], wantedPage = 1;
+let toInner;
 
 allForms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
 async function gatMainList(pageIndex) {
   const dataRef = ref(database, MainList);
   const dataOrd = query(dataRef, orderByChild(order));
-  const dataSize = await get(dataOrd).then(res => res.size);
-  const dataPages = Math.ceil(dataSize/size);
+  const { Manga } = await import('./components.js');
   
-  for (var index = 0; index < dataPages; index++) {
-    allPages.push({
-      from: Number(index*size),
-      to: Number((index+1)*size)
-    })
-  }
-  
-  let reversedPages = allPages.reverse();
-  const dataStr = query(dataOrd, startAfter(reversedPages[pageIndex - 1].from));
-  const dataEnd = query(dataStr, endAt(reversedPages[pageIndex - 1].to));
-  
-  onValue(dataEnd, async (snaps) => {
-    const { Manga } = await import('./components.js');
-    const snapshot = Object.values(snaps.val()).reverse();
+  onValue(dataOrd, (snaps) => {
+    const snapSize = snaps.size;
+    const snapPage = Math.ceil(snapSize / size);
+    const snapshot = Object.values(snaps.val());
     
-    snapshot.map(data => Container.innerHTML += Manga(data))
-  })
+    for (var index = 0; index < snapPage; index++) {
+      allPages.push({
+        from: Number( index*size ),
+        to: Number( (index+1)*size )
+      });
+    }
+    
+    allPages.reverse();
+    toInner = snapshot.slice(allPages[pageIndex - 1].from, allPages[pageIndex - 1].to).reverse();
+    innerData(toInner, Manga);
+    
+    lmpBtn.addEventListener('click', () => {
+      pageIndex = pageIndex + 1;
+      
+      toInner = snapshot.slice(allPages[pageIndex - 1].from, allPages[pageIndex - 1].to).reverse();
+      innerData(toInner, Manga);
+    })
+  });
 }
 
-function getCoversList(name, type) {
-  document.title = `${type} | ${name}`
+async function getCoversList(name, type) {
+  document.title = `${type} | ${name}`;
   const dataRef = ref(database, CoversList);
   const dataOrd = query(dataRef, orderByChild(order));
+  const { Volume } = await import('./components.js');
   
-  onValue(dataOrd, async (snaps) => {
+  onValue(dataOrd, (snaps) => {
     Container.innerHTML = '';
-    const { Volume } = await import('./components.js');
     const snapshot = Object.values(snaps.val()).reverse();
     const filtered = snapshot.filter((item) => {
       return item['Title'] === name;
@@ -76,15 +83,17 @@ function getCoversList(name, type) {
       return item['Type'] === type;
     });
     
-    filtered.map(data => Container.innerHTML += Volume(data))
+    innerData(filtered, Volume)
   })
+}
+
+function innerData(array, Compo) {
+  array.map(item => Container.innerHTML += Compo(item));
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   if(WindowPath === '/' || WindowPath === '/index.html') {
     gatMainList(wantedPage);
-    
-    lmpBtn.addEventListener('click', () => gatMainList((wantedPage++)+1))
   } else if(WindowPath === '/manga.html') {
     getCoversList(WindowTitle, WindowType);
   }

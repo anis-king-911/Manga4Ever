@@ -122,6 +122,5 @@ window.addEventListener('DOMContentLoaded', async (event) => {
     
     const { SoloRead } = await import('./functions/read/solo.js');
     SoloRead(MangaTable, { title: WindowTitle, type: WindowType });
-    
   }
 });
