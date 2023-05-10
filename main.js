@@ -26,27 +26,59 @@ const WindowPath = window.location.pathname;
 const WindowSearch = window.location.search;
 const WindowParams = new URLSearchParams(WindowSearch);
 const WindowTitle = WindowParams.has('title') ? WindowParams.get('title').replaceAll('_', ' ') : null;
-const WindowType = WindowParams.has('type') ? WindowParams.get('type').replaceAll('_', ' ') : null;
+const WindowState = WindowParams.has('state') ? WindowParams.get('state').replaceAll('_', ' ').toLocaleLowerCase() : null;
+const WindowType = WindowParams.has('type') ? WindowParams.get('type').replaceAll('_', ' ').toLocaleLowerCase() : null;
 
 const Container = document.querySelector('.Container');
 const lmpBtn = document.querySelector('.lmp button');
+const SearchMe = document.querySelector('#SearchMe');
 const allForms = document.querySelectorAll('form');
+const opt = (item) => `<option value="${item}">${item}</option>`;
+
+const SearchFilter = document.querySelector('.SearchFilter');
 
 let MainList = 'MainList/', CoversList = 'CoversList/';
 let order = 'ID', size = 15, allPages = [], wantedPage = 1;
-let toInner;
+let toInner, delayTimer;
 
 allForms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
 
-async function gatMainList(pageIndex) {
+async function gatMainList(pageIndex, parameters) {
   const dataRef = ref(database, MainList);
   const dataOrd = query(dataRef, orderByChild(order));
   const { Manga } = await import('./components.js');
   
   onValue(dataOrd, (snaps) => {
-    const snapSize = snaps.size;
+    Container.innerHTML = '';
+    const { WindowState, WindowType } = parameters;
+    let snapshot = Object.values(snaps.val());
+    
+    if (!WindowState && !WindowType) {
+      snapshot = snapshot;
+    }
+    
+    if(!WindowState && WindowType) {
+      snapshot = snapshot.filter((item) => {
+        return item['Type'].toLocaleLowerCase() === WindowType;
+      });
+    }
+    
+    if(WindowState && !WindowType) {
+      snapshot = snapshot.filter((item) => {
+        return item['State'].toLocaleLowerCase() === WindowState;
+      });
+    }
+    
+    if (WindowState && WindowType) {
+      snapshot = snapshot.filter((item) => {
+        return item['State'].toLocaleLowerCase() === WindowState;
+      }).filter((item) => {
+        return item['Type'].toLocaleLowerCase() === WindowType;
+      });
+    }
+    
+    const snapSize = snapshot.length;
     const snapPage = Math.ceil(snapSize / size);
-    const snapshot = Object.values(snaps.val());
     
     for (var index = 0; index < snapPage; index++) {
       allPages.push({
@@ -64,7 +96,10 @@ async function gatMainList(pageIndex) {
       
       toInner = snapshot.slice(allPages[pageIndex - 1].from, allPages[pageIndex - 1].to).reverse();
       innerData(toInner, Manga);
+      if(pageIndex === snapPage) lmpBtn.remove();
     })
+    
+    if(pageIndex === snapPage) lmpBtn.remove();
   });
 }
 
@@ -80,21 +115,74 @@ async function getCoversList(name, type) {
     const filtered = snapshot.filter((item) => {
       return item['Title'] === name;
     }).filter((item) => {
-      return item['Type'] === type;
+      return item['Type'].toLocaleLowerCase() === type;
     });
     
     innerData(filtered, Volume)
   })
 }
 
+async function getSearchedTitle(wanted) {
+  const dataRef = ref(database, MainList);
+  const { Manga } = await import('./components.js');
+  
+  onValue(dataRef, (snaps) => {
+    Container.innerHTML = '';
+    const snapshot = Object.values(snaps.val());
+    const searched = snapshot.filter((item) => {
+      return String(item['Title']).toLocaleLowerCase().match(String(wanted).toLocaleLowerCase())
+    })
+    
+    //console.log(searched);
+    innerData(searched, Manga);
+    lmpBtn.remove();
+  })
+}
+
+function getAvailableTitles() {
+  SearchMe.innerHTML = '';
+  const dataRef = ref(database, MainList);
+  
+  onValue(dataRef, (snaps) => {
+    const snapchat = Object.values(snaps.val());
+    const titles = snapchat.map(item => item['Title']);
+    
+    [... new Set(titles)].map(item => SearchMe.innerHTML += opt(item))
+  })
+}
+
 function innerData(array, Compo) {
+  //console.log(WindowSearch);
   array.map(item => Container.innerHTML += Compo(item));
+}
+
+function insertParam(key, value) {
+  var searchParams = new URLSearchParams(window.location.search)
+  searchParams.set(key, value)
+  window.location.search = searchParams.toString()
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   if(WindowPath === '/' || WindowPath === '/index.html') {
-    gatMainList(wantedPage);
+    gatMainList(wantedPage, { WindowState, WindowType });
+    getAvailableTitles();
+
+    SearchFilter.querySelector('input').addEventListener('keyup', () => {
+      clearTimeout(delayTimer);
+      delayTimer = setTimeout(() => {
+        
+        if(SearchFilter.querySelector('input').value === '') {
+          gatMainList(wantedPage, { WindowState, WindowType});
+        } else {
+          getSearchedTitle(SearchFilter.querySelector('input').value);
+        }
+      }, 2400);
+    })
+    
+    SearchFilter.reset();
   } else if(WindowPath === '/manga.html') {
     getCoversList(WindowTitle, WindowType);
   }
-})
+});
+
+window.insertParam = insertParam;

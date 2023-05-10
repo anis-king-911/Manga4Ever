@@ -17,30 +17,30 @@
 </head>
 
 <body>
-  <!--form class="SearchFilter">
+  <form class="SearchFilter">
     <i>&#128269;</i>
-    <input type="text" name="Search" placeholder="Search..." data-value />
+    <input type="text" list="SearchMe" name="Search" placeholder="Search..." />
+    <datalist id="SearchMe"></datalist>
   </form>
 
   <form class="StateFilter">
-    <button>Show All</button>
-    <button>Publishing</button>
-    <button>Finished</button>
-    <button>Discontinued</button>
-    <button>On Hiatus</button>
+    <a href="/">Show All</a>
+    <a href="javascript: insertParam('state', 'publishing')">publishing</a>
+    <a href="javascript: insertParam('state', 'finished')">finished</a>
+    <a href="javascript: insertParam('state', 'discontinued')">discontinued</a>
+    <a href="javascript: insertParam('state', 'on hiatus')">on hiatus</a>
   </form>
 
-  <form class="SortingFilter">
+  <!--form class="SortingFilter">
     <button>Sort Asc</button>
     <button>Sort Desc</button>
-  </form>
+  </form-->
 
   <form class="TypeFilter">
-    <button>Show All</button>
-    <button>Manga</button>
-    <button>One Shot</button>
-    <button>Light Novel</button>
-  </form-->
+    <a href="javascript: insertParam('type', 'manga')">manga</a>
+    <a href="javascript: insertParam('type', 'one shot')">one shot</a>
+    <a href="javascript: insertParam('type', 'light novel')">light novel</a>
+  </form>
   
   <div class="Container"></div>
 

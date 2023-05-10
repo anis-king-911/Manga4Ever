@@ -4,10 +4,10 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
   return `
 <article x-data="{openDetails: false}" data-state="${State}" data-type="${Type}" id="${ID}">
   <div class="Cover">
-    <img src="${Cover}" alt="${Title}">
+    <img src="${Cover}" alt="${Title}: ${VolCount}">
   </div>
   <div class="Details" x-show="openDetails" x-cloak>
-    <div class="Info">
+    <div class="Info" x-show="openDetails" x-transition.duration.600ms>
       <button x-on:click="openDetails = ! openDetails">&times;</button>
       <h2>${Title}</h2>
       <p>Type: <span>${Type}</span></p>
@@ -30,13 +30,24 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
 
 function Volume({ ID, Title, Cover, VolNumber, Dates }) {
   return `
-<article id="${ID}">
-  <span class="Date">${toDate(Dates['PubAt'])}</span>
-  <button class="Expand"><i class="fa-solid fa-maximize"></i></button>
-  <div class="Cover">
-    <img src="${Cover}" alt="${Title}">
+<article x-data="{openModal: false}" id="${ID}">
+  <div class="Actions">
+    <button class="Expand" x-on:click="openModal = ! openModal">
+      <i class="fa-solid fa-maximize"></i>
+    </button>
+    <a href="${String(Cover).replace('/tr:w-200/', '/tr:w-400/')}" target="_blank" download>
+      <button class="Download"><i class="fa-solid fa-download"></i></button>
+    </a>
+    <span class="Date">${toDate(Dates['PubAt'])}</span>
   </div>
-  <span class="Title">${Title}: ${VolNumber}</span>
+  <div class="Cover">
+    <img src="${Cover}" alt="${Title}: ${VolNumber}">
+  </div>
+  <div class="Modal" x-show="openModal" x-cloak>
+    <button x-on:click="openModal = ! openModal">&times;</button>
+    <img src="${String(Cover).replace('/tr:w-200/', '/tr:w-400/')}" alt="${Title}: ${VolNumber}">
+  </div>
+  <span class="Title">Volume: ${VolNumber}</span>
 </article>
   `;
 }

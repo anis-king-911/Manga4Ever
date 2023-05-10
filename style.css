@@ -9,7 +9,7 @@ body {
   padding: 0;
 }
 
-button {
+button, a {
   cursor: pointer;
 }
 
@@ -33,12 +33,12 @@ span {
 }
 
 .fa-circle-arrow-right {
-  color: #38bdf8;
+  color: #34d399;
   font-size: 14px;
 }
 
 .fa-circle-info {
-  color: #34d399;
+  color: #38bdf8;
   font-size: 14px;
 }
 
@@ -47,7 +47,10 @@ span {
   font-size: 14px;
 }
 
-/*
+.fa-download {
+  color: #4ade80;
+  font-size: 14px;
+}
 
 form {
   width: 90%;
@@ -100,6 +103,8 @@ form {
   background: rgba(0, 0, 0, .18);
 }
 
+/*
+
 .SortingFilter {
   display: flex;
   flex-wrap: wrap;
@@ -127,6 +132,8 @@ form {
   border: 1px solid #000;
   background: rgba(0, 0, 0, .18);
 }
+
+*/
 
 .TypeFilter {
   display: flex;
@@ -164,8 +171,6 @@ input[type="text"] {
   border-radius: 6px;
 }
 
-*/
-
 .lmp {
   width: 90%;
   margin: 0 auto 10px;
@@ -187,7 +192,8 @@ input[type="text"] {
   display: grid;
   grid-gap: 6px;
   border-radius: 6px;
-  grid-template-columns: repeat(5, 1fr);
+  /* grid-template-columns: repeat(5, 1fr); */
+  grid-template-columns: repeat(auto-fit, minmax(calc(20% - 12px), 1fr));
 }
 
 article {
@@ -200,11 +206,19 @@ article {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  transition: 800ms;
+  aspect-ratio: 1 / 1.6;
 }
 
-article.Hidden {
-  display: none;
+article:hover .Actions {
+  top: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+article:hover .Title {
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
 }
 
 .Cover {
@@ -239,7 +253,6 @@ article.Hidden {
 }
 
 .Info h2, .Title {
-  transition: 800ms;
   width: 100%;
   margin: 18px 0;
   white-space: nowrap;
@@ -255,17 +268,6 @@ article.Hidden {
   padding: 6px;
 }
 
-/*
-.Info h4 {
-  background: red;
-  margin: 0;
-  position: absolute;
-  top: 0;right: 0;
-  z-index: 8;
-  border-radius: 6px;
-}
-*/
-
 .Info button {
   position: absolute;
   top: -10px;right: -10px;
@@ -278,7 +280,7 @@ article.Hidden {
 
 .Actions {
   position: absolute;
-  top: 0;left: 0;
+  top: -34px;left: 0;
   width: 100%;
   padding: 4px;
   display: flex;
@@ -286,6 +288,9 @@ article.Hidden {
   justify-content: flex-start;
   border-radius: 6px;
   gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 600ms;
 }
 
 .Actions button {
@@ -298,71 +303,84 @@ article.Hidden {
   justify-content: center;
 }
 
-.Date {
-  position: absolute;
-  top: 6px;right: 6px;
-  z-index: 8;
-  background: deepskyblue;
-  border-radius: 6px;
-  padding: 6px;
-  font-size: 10px;
-}
-
 .Title {
   position: absolute;
-  bottom: 0;
-  backdrop-filter: blur(4px);
-  background: rgb(0 0 0 / 40%);
+  bottom: -36px;
+  backdrop-filter: blur(1px);
+  background: linear-gradient(180deg,transparent,rgba(0,0,0,.8));
   font-size: 20px;
   color: #fff;
   margin: 0;
   padding: 6px 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 600ms;
 }
 
-.Expand {
-  position: absolute;
-  top: 6px;
-  left: 6px;
+.Date {
+  background: #38bdf8;
   border: 1px solid #000;
   border-radius: 6px;
-  width: 24px;
-  aspect-ratio: 1 / 1;
+  font-size: 10px;
+  padding: 6px;
+}
+
+/* .Expand {} */
+/* .Download {} */
+
+.Modal {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;left: 0;
+  z-index: 9;
+  background: rgb(0 0 0 / 40%);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/*
-*
-* 1. change the responsiveness
-*  - from media query
-*  - to grid layout or something like that
-*
-***/
+.Modal button {
+  position: absolute;
+  top: 10px;right: 10px;
+  z-index: 1;
+  font-weight: bolder;
+  padding: 6px 10px;
+  border: 1px solid #000;
+  border-radius: 6px;
+}
+
+.Modal img {
+  width: 60%;
+  max-width: 400px;
+  height: unset;
+  border-radius: 6px;
+}
 
 /*********************************************/
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 840px) {
   .Container {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(calc(25% - 12px), 1fr));
   }
 }
 
-@media only screen and (max-width: 650px) {
+@media only screen and (max-width: 680px) {
   .Container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(calc(33% - 12px), 1fr));
   }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 500px) {
   .Container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(calc(50% - 12px), 1fr));
   }
 }
 
-@media only screen and (max-width: 300px) {
+@media only screen and (max-width: 380px) {
   .Container {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(calc(100% - 12px), 1fr));
   }
 }
 
