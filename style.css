@@ -52,6 +52,28 @@ span {
   font-size: 14px;
 }
 
+.loading {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: rgba(207 240 255 / 90%);
+  backdrop-filter: blur(2px);
+}
+
+.loading span {
+  border: 16px solid #fff;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
 form {
   width: 90%;
   margin: 10px auto;
@@ -103,8 +125,6 @@ form {
   background: rgba(0, 0, 0, .18);
 }
 
-/*
-
 .SortingFilter {
   display: flex;
   flex-wrap: wrap;
@@ -132,8 +152,6 @@ form {
   border: 1px solid #000;
   background: rgba(0, 0, 0, .18);
 }
-
-*/
 
 .TypeFilter {
   display: flex;
@@ -163,7 +181,7 @@ form {
   background: rgba(0, 0, 0, .18);
 }
 
-input[type="text"] {
+input[type="search"] {
   font-size: 20px;
   padding: 10px;
   margin: 0;
@@ -385,3 +403,8 @@ article:hover .Title {
 }
 
 /*********************************************/
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

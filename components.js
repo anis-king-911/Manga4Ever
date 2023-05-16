@@ -1,4 +1,5 @@
-const toDate = (d) => new Date(d).toLocaleDateString('en-US', {dateStyle: 'medium'})
+const toDate = (d) => new Date(d).toLocaleDateString('en-US', {dateStyle: 'medium'});
+const toDigits = (n) => new Number(n).toLocaleString('en-US', {minimumIntegerDigits: 3});
 
 function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
   return `
@@ -12,8 +13,10 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
       <h2>${Title}</h2>
       <p>Type: <span>${Type}</span></p>
       <p>State: <span>${State}</span></p>
-      <p>Volume Count: <span>${VolCount}</span></p>
+      <p>Volume: <span>${toDigits(VolCount)}</span></p>
+      ${!Type.includes('Light Novel') ? `
       <p>Magazine: <span>${Magazine}</span></p>
+      ` : ''}
       <p>Created At: <span>${toDate(Dates['PubAt'])}</span></p>
     </div>
   </div>

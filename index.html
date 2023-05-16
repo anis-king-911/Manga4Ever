@@ -17,26 +17,32 @@
 </head>
 
 <body>
+  
+  <div class="loading"><span></span></div>
+  
   <form class="SearchFilter">
     <i>&#128269;</i>
-    <input type="text" list="SearchMe" name="Search" placeholder="Search..." />
+    <input type="search" list="SearchMe" name="Search" placeholder="Search..." />
     <datalist id="SearchMe"></datalist>
   </form>
 
   <form class="StateFilter">
-    <a href="/">Show All</a>
+    <a href="javascript: removeParam('state')">Show All</a>
     <a href="javascript: insertParam('state', 'publishing')">publishing</a>
     <a href="javascript: insertParam('state', 'finished')">finished</a>
     <a href="javascript: insertParam('state', 'discontinued')">discontinued</a>
     <a href="javascript: insertParam('state', 'on hiatus')">on hiatus</a>
   </form>
 
-  <!--form class="SortingFilter">
-    <button>Sort Asc</button>
-    <button>Sort Desc</button>
-  </form-->
+  <form class="SortingFilter">
+    <a href="javascript: removeParam('sort')">re sort</a>
+    <a href="javascript: insertParam('sort', 'asc')">Sort Asc</a>
+    <a href="javascript: insertParam('sort', 'desc')">Sort Desc</a>
+    <a href="javascript: insertParam('sort', 'pubat')">Sort PubAt</a>
+  </form>
 
   <form class="TypeFilter">
+    <a href="javascript: removeParam('type')">Show All</a>
     <a href="javascript: insertParam('type', 'manga')">manga</a>
     <a href="javascript: insertParam('type', 'one shot')">one shot</a>
     <a href="javascript: insertParam('type', 'light novel')">light novel</a>
