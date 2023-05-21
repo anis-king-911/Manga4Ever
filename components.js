@@ -14,9 +14,7 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
       <p>Type: <span>${Type}</span></p>
       <p>State: <span>${State}</span></p>
       <p>Volume: <span>${toDigits(VolCount)}</span></p>
-      ${!Type.includes('Light Novel') ? `
-      <p>Magazine: <span>${Magazine}</span></p>
-      ` : ''}
+      ${Magazine ? `<p>Magazine: <span>${Magazine}</span></p>` : ''}
       <p>Created At: <span>${toDate(Dates['PubAt'])}</span></p>
     </div>
   </div>
@@ -29,6 +27,7 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
 </article>
   `;
   // Details // See More
+  //  ` : '' }
 }
 
 function Volume({ ID, Title, Cover, VolNumber, Dates }) {
@@ -44,13 +43,13 @@ function Volume({ ID, Title, Cover, VolNumber, Dates }) {
     <span class="Date">${toDate(Dates['PubAt'])}</span>
   </div>
   <div class="Cover">
-    <img src="${Cover}" alt="${Title}: ${VolNumber}">
+    <img src="${Cover}" alt="${Title}: ${toDigits(VolNumber)}">
   </div>
   <div class="Modal" x-show="openModal" x-cloak>
     <button x-on:click="openModal = ! openModal">&times;</button>
-    <img src="${String(Cover).replace('/tr:w-200/', '/tr:w-400/')}" alt="${Title}: ${VolNumber}">
+    <img src="${String(Cover).replace('/tr:w-200/', '/tr:w-600/')}" alt="${Title}: ${VolNumber}">
   </div>
-  <span class="Title">Volume: ${VolNumber}</span>
+  <span class="Title">Volume: ${toDigits(VolNumber)}</span>
 </article>
   `;
 }

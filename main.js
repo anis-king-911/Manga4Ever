@@ -7,10 +7,10 @@
 
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import {
   getDatabase, ref, onValue, query, orderByChild
-} from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
   databaseURL: "https://manga4ever-vercel-default-rtdb.europe-west1.firebasedatabase.app",
@@ -32,126 +32,48 @@ const SearchMe = document.querySelector('#SearchMe');
 const allForms = document.querySelectorAll('form');
 const lmpBtn = document.querySelector('.lmp button');
 const opt = (item) => `<option value="${item}">${item}</option>`;
+const _sort = (a, b) => (a['ID'] - b['ID']);
 
-const SearchFilter = document.querySelector('.SearchFilter');
-const loading = document.querySelector('.loading');
+const SearchFilter = document.querySelector('.SearchFilter input');
+const domLoading = document.querySelector('.domLoading');
 
 let MainList = 'MainList/', CoversList = 'CoversList/';
 let order = 'ID', size = 15, allPages = [], wantedPage = 1;
-let toInner, delayTimer, sortSnap;
+let delayTimer;
 
 allForms.forEach(form => form.addEventListener('submit', event => event.preventDefault()));
-
-function SFS_System(array, parameters) {
-  // SFS_System = SearchFilterSort_Systems
-  const { WindowState, WindowType, WindowSort, SearchedTitle } = parameters;
-  
-  // return 0, [];
-  if (!WindowState && !WindowType && !WindowSort) {
-    array = array;
-  }
-
-  // return 1, ['State'];
-  if (WindowState && !WindowType && !WindowSort) {
-    array = array.filter((item) => (
-      item['State'].toLocaleLowerCase() === WindowState
-    ));
-  }
-
-  // return 1, ['Type'];
-  if (!WindowState && WindowType && !WindowSort) {
-    array = array.filter((item) => (
-      item['Type'].toLocaleLowerCase() === WindowType
-    ));
-  }
-
-  // return 1, ['Sort'];
-  if (!WindowState && !WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
-    array = sortSnap;
-  }
-
-  // return 2, ['State', 'Type'];
-  if (WindowState && WindowType && !WindowSort) {
-    array = array.filter((item) => (
-      item['State'].toLocaleLowerCase() === WindowState
-    )).filter((item) => (
-      item['Type'].toLocaleLowerCase() === WindowType
-    ));
-  }
-
-  // return 2, ['State', 'Sort'];
-  if (WindowState && !WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
-
-    array = sortSnap.filter((item) => (
-      item['State'].toLocaleLowerCase() === WindowState
-    ));
-  }
-
-  // return 2, ['Type', 'Sort'];
-  if (!WindowState && WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
-
-    array = sortSnap.filter((item) => (
-      item['Type'].toLocaleLowerCase() === WindowType
-    ));
-  }
-
-  // return 3, ['State', 'Type', 'Sort'];
-  if (WindowState && WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
-
-    array = sortSnap.filter((item) => (
-      item['State'].toLocaleLowerCase() === WindowState
-    )).filter((item) => (
-      item['Type'].toLocaleLowerCase() === WindowType
-    ));
-  }
-  
-  if(SearchedTitle) {
-    array = array.filter((item) => (
-      item['Title'].toLocaleLowerCase().match(SearchedTitle.toLocaleLowerCase())
-    ));
-  }
-  
-  return array;
-}
 
 async function gatMainList(pageIndex, parameters) {
   const dataRef = ref(database, MainList);
   const dataOrd = query(dataRef, orderByChild(order));
+  const { SFS_System } = await import('./SFS_Systems.js');
   const { Manga } = await import('./components.js');
 
   onValue(dataOrd, (snaps) => {
     Container.innerHTML = '';
-    const sortedSnapshot = Object.values(snaps.val()).sort((a, b) => (a['ID'] - b['ID']));
+    const sortedSnapshot = Object.values(snaps.val()).sort(_sort);
     const snapshot = SFS_System(sortedSnapshot, parameters);
     const snapSize = snapshot.length;
     const snapPage = Math.ceil(snapSize / size);
-
+    
+    //allPages.splice(0, allPages.length);
     for (var index = 0; index < snapPage; index++) {
-      allPages.push({
-        from: Number(index * size),
-        to: Number((index + 1) * size)
-      });
+      allPages.push(snapshot.slice((index*size), ((index+1)*size)));
     }
 
-    allPages.reverse();
-    toInner = snapshot.slice(allPages[pageIndex - 1].from, allPages[pageIndex - 1].to).reverse();
-    innerData(toInner, Manga);
+    innerData(allPages[pageIndex - 1], Manga);
 
-    lmpBtn.addEventListener('click', () => {
+    lmpBtn.addEventListener('click', async () => {
       pageIndex = pageIndex + 1;
-
-      toInner = snapshot.slice(allPages[pageIndex - 1].from, allPages[pageIndex - 1].to).reverse();
-      innerData(toInner, Manga);
-      if (pageIndex === snapPage) lmpBtn.disabled = true; //lmpBtn.remove();
+      
+      await innerLoading();
+      await innerData(allPages[pageIndex - 1], Manga);
+      await removeLoading();
+      if (Container.childElementCount === snapSize) lmpBtn.parentNode.remove();
     });
-
-    if (pageIndex === snapPage) lmpBtn.disabled = true; //lmpBtn.remove();
-
-    console.log({ ...parameters, snapSize });
+    
+    if (Container.childElementCount === snapSize) lmpBtn.parentNode.remove();
+    //console.log({ ...parameters, snapSize });
   });
 }
 
@@ -164,41 +86,13 @@ async function getCoversList(name, type) {
   onValue(dataOrd, (snaps) => {
     Container.innerHTML = '';
     const snapshot = Object.values(snaps.val()).reverse();
-    const filtered = snapshot.filter((item) => {
-      return item['Title'] === name;
-    }).filter((item) => {
-      return item['Type'].toLocaleLowerCase() === type;
-    });
-
+    const filtered = snapshot.filter((item) => (
+      item['Title'] === name
+    )).filter((item) => (
+      item['Type'].toLocaleLowerCase() === type
+    ));
+    
     innerData(filtered, Volume)
-  })
-}
-/*
-async function getSearchedTitle(wanted) {
-  const dataRef = ref(database, MainList);
-  const { Manga } = await import('./components.js');
-
-  onValue(dataRef, (snaps) => {
-    Container.innerHTML = '';
-    const snapshot = Object.values(snaps.val());
-    const searched = snapshot.filter((item) => {
-      return String(item['Title']).toLocaleLowerCase().match(String(wanted).toLocaleLowerCase())
-    })
-
-    innerData(searched, Manga);
-    lmpBtn.disabled = true;
-  })
-}
-*/
-function getAvailableTitles() {
-  SearchMe.innerHTML = '';
-  const dataRef = ref(database, MainList);
-
-  onValue(dataRef, (snaps) => {
-    const snapchat = Object.values(snaps.val());
-    const titles = snapchat.map(item => item['Title']);
-
-    [...new Set(titles)].map(item => SearchMe.innerHTML += opt(item))
   })
 }
 
@@ -218,74 +112,83 @@ function removeParam(key) {
   window.location.search = searchParams.toString()
 }
 
-function newSnapshot(array, _sort) {
-  _sort.includes('asc') ?
-    array = array.sort((a, b) => (
-      a['Title'] < b['Title'] ? 1 :
-      a['Title'] > b['Title'] ? -1 : 0
-    )) :
-    _sort.includes('desc') ?
-    array = array.sort((a, b) => (
-      a['Title'] < b['Title'] ? -1 :
-      a['Title'] > b['Title'] ? 1 : 0
-    )) :
-    _sort.includes('pubat') ?
-    array = array.sort((a, b) => (
-      a['Dates']['PubAt'] - b['Dates']['PubAt']
-    )) :
-    '';
+function innerLoading() {
+  lmpBtn.innerHTML = '<div class="btnLoading"></div>';
+  setTimeout(() => lmpBtn.innerHTML = 'load more', 5000);
+}
 
-  return array;
+function removeLoading() {
+  lmpBtn.innerHTML = 'load more';
+}
 
-  /*
-  WindowSort.includes('asc') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Title'] < b['Title'] ? 1 :
-      a['Title'] > b['Title'] ? -1 : 0
-    ))
-  : WindowSort.includes('desc') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Title'] < b['Title'] ? -1 :
-      a['Title'] > b['Title'] ? 1 : 0
-    ))
-  : WindowSort.includes('pubat') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Dates']['PubAt'] - b['Dates']['PubAt']
-    ))
-  : '';
-  */
+function getAvailableTitles() {
+  SearchMe.innerHTML = '';
+  const dataRef = ref(database, MainList);
+
+  onValue(dataRef, (snaps) => {
+    const snapchat = Object.values(snaps.val());
+    const titles = snapchat.map(item => item['Title']);
+
+    [...new Set(titles)].map(item => SearchMe.innerHTML += opt(item))
+  })
+}
+
+async function getSearchedTitles(argument) {
+  const dataRef = ref(database, MainList);
+  const dataOrd = query(dataRef, orderByChild(order));
+  const { Manga } = await import('./components.js');
+  //const { SFS_System } = await import('./SFS_Systems.js');
+  
+  onValue(dataOrd, (snaps) => {
+    Container.innerHTML = '';
+    const snapshot = Object.values(snaps.val()).sort(_sort).filter((item) => (
+      item['Title'].toLocaleLowerCase().includes(argument.toLocaleLowerCase()) ? item : null
+    ));
+    //const snapshot = SFS_System(sortedSnapshot, parameters);
+    const snapSize = snapshot.length;
+    const snapPage = Math.ceil(snapSize / size);
+  
+    //allPages.splice(0, allPages.length);
+    //for (var index = 0; index < snapPage; index++) {
+    //  allPages.push(snapshot.slice((index * size), ((index + 1) * size)));
+    //}
+  
+    innerData(snapshot, Manga);
+    lmpBtn.parentNode.remove();
+    //lmpBtn.addEventListener('click', async () => {
+    //  pageIndex = pageIndex + 1;
+    //
+    //  await innerLoading();
+    //  await innerData(allPages[pageIndex - 1], Manga);
+    //  await removeLoading();
+    //  if (Container.childElementCount === snapSize) lmpBtn.parentNode.remove();
+    //});
+  
+    //if (Container.childElementCount === snapSize) lmpBtn.parentNode.remove();
+    //console.log({ ...parameters, snapSize });
+  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
-  let run = setInterval(() => {
-    if (Container.childNodes.length) {
-      loading.remove();
-      clearInterval(run);
-    }
-  }, 100);
 
   if (WindowPath === '/' || WindowPath === '/index.html') {
     gatMainList(wantedPage, { WindowState, WindowType, WindowSort });
     getAvailableTitles();
 
-    SearchFilter.querySelector('input').addEventListener('input', () => {
+    SearchFilter.addEventListener('input', () => {
       clearTimeout(delayTimer);
       delayTimer = setTimeout(() => {
-
-        if (SearchFilter.querySelector('input').value === '') {
-          gatMainList(wantedPage, { WindowState, WindowType, WindowSort });
-          lmpBtn.disabled = false;
+        
+        if (SearchFilter.value !== '') {
+          getSearchedTitles(SearchFilter.value);
         } else {
-          gatMainList(wantedPage, {
-            SearchedTitle: SearchFilter.querySelector('input').value
-          });
-          //getSearchedTitle(SearchFilter.querySelector('input').value);
+          gatMainList(wantedPage, { WindowState, WindowType, WindowSort });
+          lmpBtn.parentNode.innerHTML = `<button>load more</button>`;
         }
-      }, 2400);
-    })
-
-    SearchFilter.reset();
+        
+      }, 1000);
+    });
+    
   } else if (WindowPath === '/manga.html') {
     getCoversList(WindowTitle, WindowType);
   }

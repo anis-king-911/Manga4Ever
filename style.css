@@ -13,6 +13,10 @@ button, a {
   cursor: pointer;
 }
 
+button[disabled] {
+  cursor: not-allowed;
+}
+
 img {
   width: 100%;
   height: 100%;
@@ -52,21 +56,8 @@ span {
   font-size: 14px;
 }
 
-.loading {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  background: rgba(207 240 255 / 90%);
-  backdrop-filter: blur(2px);
-}
-
-.loading span {
-  border: 16px solid #fff;
+.domLoading {
+  border: 16px solid #f3f3f3;
   border-top: 16px solid #3498db;
   border-radius: 50%;
   width: 120px;
@@ -77,10 +68,8 @@ span {
 form {
   width: 90%;
   margin: 10px auto;
-  display: grid;
   border: 1px solid #000;
   border-radius: 6px;
-  overflow: hidden;
 }
 
 .SearchFilter {
@@ -95,98 +84,30 @@ form {
 
 .SearchFilter input {
   width: 100%;
-}
-
-.StateFilter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.StateFilter button {
-  border: none;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, .14);
-  padding: 6px 14px;
-  font-size: 14px;
-  font-weight: bolder;
-  transition: 800ms;
-}
-
-.StateFilter button.active {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .2);
-}
-
-.StateFilter button:hover {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .18);
-}
-
-.SortingFilter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.SortingFilter button {
-  border: none;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, .14);
-  padding: 6px 14px;
-  font-size: 14px;
-  font-weight: bolder;
-  transition: 800ms;
-}
-
-.SortingFilter button.active {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .2);
-}
-
-.SortingFilter button:hover {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .18);
-}
-
-.TypeFilter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.TypeFilter button {
-  border: none;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, .14);
-  padding: 6px 14px;
-  font-size: 14px;
-  font-weight: bolder;
-  transition: 800ms;
-}
-
-.TypeFilter button.active {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .2);
-}
-
-.TypeFilter button:hover {
-  border: 1px solid #000;
-  background: rgba(0, 0, 0, .18);
-}
-
-input[type="search"] {
   font-size: 20px;
   padding: 10px;
   margin: 0;
   border: none;
   border-radius: 6px;
+}
+
+.TypeFilter, .StateFilter, .SortingFilter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  
+  width: 100%;
+  margin: unset;
+}
+
+.links {
+  width: 100%;
+  padding: 4px 5%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 4px;
 }
 
 .lmp {
@@ -201,6 +122,15 @@ input[type="search"] {
   padding: 6px 14px;
   border: 1px solid #000;
   border-radius: 6px;
+}
+
+.btnLoading {
+  width: 2rem;
+  height: 2rem;
+  border: 5px solid #fff;
+  border-top: 6px solid #9c41f2;
+  border-radius: 100%;
+  animation: spin 1s infinite linear;
 }
 
 .Container {
@@ -219,7 +149,6 @@ article {
   border-radius: 6px;
   border: 1px solid #000;
   box-shadow: 0 0 4px rgb(0 0 0 / 30%);
-  /*padding: 10px;*/
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -405,6 +334,6 @@ article:hover .Title {
 /*********************************************/
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
