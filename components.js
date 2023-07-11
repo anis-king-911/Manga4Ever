@@ -5,7 +5,7 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
   return `
 <article x-data="{openDetails: false}" data-state="${State}" data-type="${Type}" id="${ID}">
   <div class="Cover">
-    <img src="${Cover}" alt="${Title}: ${VolCount}">
+  <img src="${String(Cover).replaceAll('/DzManga4Up/', '/DzManga4Up/tr:w-300/')}" alt="${Title}: ${VolCount}">
   </div>
   <div class="Details" x-show="openDetails" x-cloak>
     <div class="Info" x-show="openDetails" x-transition.duration.600ms>
@@ -37,17 +37,17 @@ function Volume({ ID, Title, Cover, VolNumber, Dates }) {
     <button class="Expand" x-on:click="openModal = ! openModal">
       <i class="fa-solid fa-maximize"></i>
     </button>
-    <a href="${String(Cover).replace('/tr:w-200/', '/tr:w-400/')}" target="_blank" download>
+    <a href="${String(Cover).replaceAll('/DzManga4Up/', '/DzManga4Up/tr:w-600/')}" target="_blank" download>
       <button class="Download"><i class="fa-solid fa-download"></i></button>
     </a>
     <span class="Date">${toDate(Dates['PubAt'])}</span>
   </div>
   <div class="Cover">
-    <img src="${Cover}" alt="${Title}: ${toDigits(VolNumber)}">
+    <img src="${String(Cover).replaceAll('/DzManga4Up/', '/DzManga4Up/tr:w-300/')}" alt="${Title}: ${toDigits(VolNumber)}">
   </div>
   <div class="Modal" x-show="openModal" x-cloak>
     <button x-on:click="openModal = ! openModal">&times;</button>
-    <img src="${String(Cover).replace('/tr:w-200/', '/tr:w-600/')}" alt="${Title}: ${VolNumber}">
+    <img src="${String(Cover).replaceAll('/DzManga4Up/', '/DzManga4Up/tr:w-1200/')}" alt="${Title}: ${VolNumber}">
   </div>
   <span class="Title">Volume: ${toDigits(VolNumber)}</span>
 </article>
