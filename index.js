@@ -1,13 +1,10 @@
 const express = require("express");
+const path = require('path');
 const port = 3000;
 const app = express();
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
-
-app.use(express.static('./public/assets'));
+app.use("/assets", express.static(path.resolve(__dirname, "public", "assets")));
+//app.use(express.static('./public/assets'));
 
 app.get('/', (req, res) => {
   res.sendFile('./public/index.html', { root: __dirname });
