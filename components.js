@@ -1,6 +1,15 @@
 const toDate = (d) => new Date(d).toLocaleDateString('en-US', {dateStyle: 'medium'});
 const toDigits = (n) => new Number(n).toLocaleString('en-US', {minimumIntegerDigits: 3});
 
+function GeeksForGeeks() {
+  let copyGfGText = document.getElementById("GfGInput");
+
+  copyGfGText.select();
+  document.execCommand("copy");
+  
+  document.getElementById("gfg").innerHTML = "Copied the text: " + copyGfGText.value;
+}
+
 function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
   return `
 <article x-data="{openDetails: false}" data-state="${State}" data-type="${Type}" id="${ID}">
@@ -10,7 +19,7 @@ function Manga({ ID, Title, Cover, VolCount, State, Type, Magazine, Dates }) {
   <div class="Details" x-show="openDetails" x-cloak>
     <div class="Info" x-show="openDetails" x-transition.duration.600ms>
       <button x-on:click="openDetails = ! openDetails">&times;</button>
-      <h2>${Title}</h2>
+      <h2 onclick="navigator.clipboard.writeText(this.innerText)">${Title}</h2>
       <p>Type: <span>${Type}</span></p>
       <p>State: <span>${State}</span></p>
       <p>Volume: <span>${toDigits(VolCount)}</span></p>

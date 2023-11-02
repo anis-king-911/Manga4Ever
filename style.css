@@ -213,6 +213,7 @@ article:hover .Title {
   border-radius: 6px;
   margin: 0 0 14px;
   padding: 6px;
+  cursor: copy;
 }
 
 .Info button {

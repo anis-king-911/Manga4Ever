@@ -111,11 +111,13 @@ function removeParam(key) {
 }
 
 function innerLoading() {
+  lmpBtn.disabled = true;
   lmpBtn.innerHTML = '<div class="btnLoading"></div>';
   setTimeout(() => lmpBtn.innerHTML = 'load more', 10000);
 }
 
 function removeLoading() {
+  lmpBtn.disabled = false;
   lmpBtn.innerHTML = 'load more';
 }
 
