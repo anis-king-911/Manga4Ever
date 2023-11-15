@@ -136,7 +136,7 @@ form {
 .Container {
   width: 90%;
   margin: 6px auto 0;
-  padding: 6px;
+  padding: 6px 0;
   display: grid;
   grid-gap: 6px;
   border-radius: 6px;
@@ -301,7 +301,7 @@ article:hover .Title {
 
 .Modal img {
   width: 60%;
-  max-width: 400px;
+  max-width: 370px;
   height: unset;
   border-radius: 6px;
 }
