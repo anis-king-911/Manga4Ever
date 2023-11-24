@@ -11,8 +11,8 @@
   <script type="importmap">
     {
       "imports": {
-        "firebase-app": "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js",
-        "firebase-database": "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"
+        "firebase-app": "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js",
+        "firebase-database": "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js"
       }
     }
   </script>
@@ -53,9 +53,12 @@
     <form class="SortingFilter">
       <span>Sort</span>
       <a href="javascript: removeParam('sort')">Unsort</a>
+      <a href="javascript: setingSortingDirection()">Sorting Direction</a>
+      <!--
       <a href="javascript: insertParam('sort', 'asc')">Sort Asc</a>
       <a href="javascript: insertParam('sort', 'desc')">Sort Desc</a>
       <a href="javascript: insertParam('sort', 'pubat')">Sort PubAt</a>
+      -->
     </form>
   </section>
 

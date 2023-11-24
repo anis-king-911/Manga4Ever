@@ -1,69 +1,86 @@
-function newSnapshot(array, _sort) {
-  _sort.includes('asc') ?
+function newSnapshot(array, _sort, _dir) {
+  _sort = _sort === null ? 'id' : _sort;
+  _dir = _dir === null ? 'asc' : _dir;
+
+  if (_sort.includes('title') && _dir.includes('asc')) {
     array = array.sort((a, b) => (
       a['Title'] < b['Title'] ? 1 :
-      a['Title'] > b['Title'] ? -1 : 0
-    )) :
-    _sort.includes('desc') ?
+        a['Title'] > b['Title'] ? -1 : 0
+    ))
+  } else if (_sort.includes('title') && _dir.includes('desc')) {
     array = array.sort((a, b) => (
       a['Title'] < b['Title'] ? -1 :
-      a['Title'] > b['Title'] ? 1 : 0
-    )) :
-    _sort.includes('pubat') ?
+        a['Title'] > b['Title'] ? 1 : 0
+    ))
+  } else if (_sort.includes('pubat') && _dir.includes('asc')) {
     array = array.sort((a, b) => (
-      a['Dates']['PubAt'] - b['Dates']['PubAt']
-    )) :
-    '';
-
+      a['Dates']['PubAt'] < b['Dates']['PubAt'] ? 1 :
+        a['Dates']['PubAt'] > b['Dates']['PubAt'] ? -1 : 0
+    ))
+  } else if (_sort.includes('pubat') && _dir.includes('desc')) {
+    array = array.sort((a, b) => (
+      a['Dates']['PubAt'] < b['Dates']['PubAt'] ? -1 :
+        a['Dates']['PubAt'] > b['Dates']['PubAt'] ? 1 : 0
+    ))
+  } else if (_sort.includes('id') && _dir.includes('asc')) {
+    array = array.sort((a, b) => (
+      a['ID'] < b['ID'] ? 1 :
+        a['ID'] > b['ID'] ? -1 : 0
+    ))
+  } else if (_sort.includes('id') && _dir.includes('desc')) {
+    array = array.sort((a, b) => (
+      a['ID'] < b['ID'] ? -1 :
+        a['ID'] > b['ID'] ? 1 : 0
+    ))
+  } else if (_sort.includes('volcount') && _dir.includes('asc')) {
+    array = array.sort((a, b) => (
+      a['VolCount'] < b['VolCount'] ? 1 :
+        a['VolCount'] > b['VolCount'] ? -1 : 0
+    ))
+  } else if (_sort.includes('volcount') && _dir.includes('desc')) {
+    array = array.sort((a, b) => (
+      a['VolCount'] < b['VolCount'] ? -1 :
+        a['VolCount'] > b['VolCount'] ? 1 : 0
+    ))
+  }
   return array;
-
-  /*
-  WindowSort.includes('asc') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Title'] < b['Title'] ? 1 :
-      a['Title'] > b['Title'] ? -1 : 0
-    ))
-  : WindowSort.includes('desc') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Title'] < b['Title'] ? -1 :
-      a['Title'] > b['Title'] ? 1 : 0
-    ))
-  : WindowSort.includes('pubat') ?
-    snapshot = snapshot.sort((a, b) => (
-      a['Dates']['PubAt'] - b['Dates']['PubAt']
-    ))
-  : '';
-  */
 }
 
 let sortSnap;
 
 function SFS_System(array, parameters) {
-  // SFS_System = SearchFilterSort_Systems
-  const { WindowState, WindowType, WindowSort /* , SearchedTitle */ } = parameters;
+  const { WindowState, WindowType, WindowSort, WindowSortDir } = parameters;
 
   // return 0, [];
-  if (!WindowState && !WindowType && !WindowSort) {
+  if (!WindowState && !WindowType && (!WindowSort && !WindowSortDir)) {
     array = array;
   }
 
   // return 1, ['State'];
-  if (WindowState && !WindowType && !WindowSort) {
+  if (WindowState && !WindowType && (!WindowSort && !WindowSortDir)) {
     array = array.filter((item) => (
       item['State'].toLocaleLowerCase() === WindowState
     ));
   }
 
   // return 1, ['Type'];
-  if (!WindowState && WindowType && !WindowSort) {
+  if (!WindowState && WindowType && (!WindowSort && !WindowSortDir)) {
     array = array.filter((item) => (
       item['Type'].toLocaleLowerCase() === WindowType
     ));
   }
 
   // return 1, ['Sort'];
-  if (!WindowState && !WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
+
+  // sorted data
+  //const oneSort = (!WindowSort && !WindowSortDir); // both null
+  const twoSort = (WindowSort && WindowSortDir); // buth true
+  const thrSort = (WindowSort && !WindowSortDir); // one true one false
+  const forSort = (!WindowSort && WindowSortDir); // one true one false
+  const finalSort = (twoSort || thrSort || forSort);
+
+  if (!WindowState && !WindowType && finalSort) {
+    sortSnap = newSnapshot(array, WindowSort, WindowSortDir);
     array = sortSnap;
   }
 
@@ -77,8 +94,8 @@ function SFS_System(array, parameters) {
   }
 
   // return 2, ['State', 'Sort'];
-  if (WindowState && !WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
+  if (WindowState && !WindowType && finalSort) {
+    sortSnap = newSnapshot(array, WindowSort, WindowSortDir);
 
     array = sortSnap.filter((item) => (
       item['State'].toLocaleLowerCase() === WindowState
@@ -86,8 +103,8 @@ function SFS_System(array, parameters) {
   }
 
   // return 2, ['Type', 'Sort'];
-  if (!WindowState && WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
+  if (!WindowState && WindowType && finalSort) {
+    sortSnap = newSnapshot(array, WindowSort, WindowSortDir);
 
     array = sortSnap.filter((item) => (
       item['Type'].toLocaleLowerCase() === WindowType
@@ -95,8 +112,8 @@ function SFS_System(array, parameters) {
   }
 
   // return 3, ['State', 'Type', 'Sort'];
-  if (WindowState && WindowType && WindowSort) {
-    sortSnap = newSnapshot(array, WindowSort);
+  if (WindowState && WindowType && finalSort) {
+    sortSnap = newSnapshot(array, WindowSort, WindowSortDir);
 
     array = sortSnap.filter((item) => (
       item['State'].toLocaleLowerCase() === WindowState
@@ -104,34 +121,8 @@ function SFS_System(array, parameters) {
       item['Type'].toLocaleLowerCase() === WindowType
     ));
   }
-  
-  // return x, ignore all the previous only the search
-  //if (SearchedTitle) {
-  //  array = array.filter((item) => (
-  //    item['Title'].toLocaleLowerCase().includes(SearchedTitle.toLocaleLowerCase()) ? item : null
-  //  ));
-  //}
-  
-  //console.log(array);
+
   return array.reverse();
 }
 
 export { SFS_System }
-
-/*
-async function getSearchedTitle(wanted) {
-  const dataRef = ref(database, MainList);
-  const { Manga } = await import('./components.js');
-
-  onValue(dataRef, (snaps) => {
-    Container.innerHTML = '';
-    const snapshot = Object.values(snaps.val());
-    const searched = snapshot.filter((item) => {
-      return String(item['Title']).toLocaleLowerCase().match(String(wanted).toLocaleLowerCase())
-    })
-
-    innerData(searched, Manga);
-    lmpBtn.disabled = true;
-  })
-}
-*/
