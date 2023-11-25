@@ -99,7 +99,7 @@ async function getSearchedTitles(argument) {
 
   onValue(dataOrd, (snaps) => {
     Container.innerHTML = '';
-    const snapshot = Object.values(snaps.val()).sort(_sort).filter((item) => (
+    const snapshot = Object.values(snaps.val()).filter((item) => (
       item['Title'].toLowerCase().includes(argument.toLowerCase()) ? item : null
     ));
 
